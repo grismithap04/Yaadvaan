@@ -1,0 +1,303 @@
+/* =====================================
+   GENERAL
+===================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, sans-serif;
+
+    background: #f4f6f8;
+
+    color: #333;
+}
+
+.app {
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: 30px;
+}
+
+
+/* =====================================
+   PAGE
+===================================== */
+
+.page {
+
+    width: 100%;
+
+    max-width: 650px;
+}
+
+
+/* =====================================
+   CARD
+===================================== */
+
+.card {
+
+    background: white;
+
+    padding: 35px;
+
+    border-radius: 18px;
+
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+
+    text-align: center;
+}
+
+h1 {
+
+    font-size: 34px;
+
+    margin-bottom: 5px;
+}
+
+h2 {
+
+    font-size: 25px;
+
+    margin-bottom: 10px;
+}
+
+h3 {
+
+    margin-top: 25px;
+}
+
+.subtitle {
+
+    font-size: 20px;
+
+    color: #666;
+}
+
+.small-text {
+
+    font-size: 14px;
+
+    color: #666;
+}
+
+
+/* =====================================
+   STEP INDICATOR
+===================================== */
+
+.step-indicator {
+
+    margin: 20px 0;
+
+    font-size: 16px;
+
+    color: #666;
+}
+
+
+/* =====================================
+   INPUTS
+===================================== */
+
+input,
+select {
+
+    width: 100%;
+
+    padding: 14px;
+
+    margin: 8px 0;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: white;
+}
+
+
+/* =====================================
+   BUTTONS
+===================================== */
+
+button {
+
+    padding: 13px 22px;
+
+    margin: 8px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #5b73e8;
+
+    color: white;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+button:hover {
+
+    opacity: 0.9;
+}
+
+.secondary {
+
+    background: #777;
+}
+
+.add-button {
+
+    background: #eee;
+
+    color: #333;
+
+    border: 1px solid #ccc;
+
+    width: 100%;
+}
+
+
+/* =====================================
+   BUTTON ROW
+===================================== */
+
+.button-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 20px;
+}
+
+
+/* =====================================
+   FAMILY MEMBERS
+===================================== */
+
+.family-member {
+
+    padding: 15px;
+
+    margin-bottom: 12px;
+
+    background: #f7f7f7;
+
+    border-radius: 10px;
+}
+
+
+/* =====================================
+   CAMERA
+===================================== */
+
+video {
+
+    width: 100%;
+
+    max-width: 450px;
+
+    height: 300px;
+
+    object-fit: cover;
+
+    border-radius: 15px;
+
+    background: #222;
+
+    margin: 15px auto;
+
+    display: block;
+}
+
+
+/* =====================================
+   STATUS
+===================================== */
+
+#face-status,
+#login-status {
+
+    min-height: 25px;
+
+    font-weight: bold;
+}
+
+
+/* =====================================
+   HIDDEN
+===================================== */
+
+.hidden {
+
+    display: none !important;
+}
+
+
+/* =====================================
+   GAME
+===================================== */
+
+.game-container {
+
+    width: 100%;
+
+    max-width: 700px;
+
+    text-align: center;
+}
+
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+
+@media (max-width: 600px) {
+
+    .app {
+
+        padding: 15px;
+    }
+
+    .card {
+
+        padding: 25px 18px;
+    }
+
+    h1 {
+
+        font-size: 28px;
+    }
+
+    video {
+
+        height: 250px;
+    }
+
+    .button-row {
+
+        flex-direction: column;
+    }
+
+}

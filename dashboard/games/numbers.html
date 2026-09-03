@@ -1,0 +1,1434 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Memory Trail</title>
+
+    <style>
+      /* =====================================================
+           BASIC RESET
+        ===================================================== */
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+
+        min-height: 100vh;
+
+        color: #293b2c;
+
+        background: #f4f6f1;
+
+        overflow-x: hidden;
+
+        position: relative;
+      }
+
+      /* =====================================================
+           MAIN BACKGROUND IMAGE
+           Used softly throughout the page
+        ===================================================== */
+
+      body::before {
+        content: "";
+
+        position: fixed;
+
+        inset: 0;
+
+        background-image: url("assets/northeast-landscape.jpg");
+
+        background-size: cover;
+
+        background-position: center;
+
+        background-repeat: no-repeat;
+
+        opacity: 0.17;
+
+        z-index: -3;
+      }
+
+      /* Light overlay over the background */
+
+      body::after {
+        content: "";
+
+        position: fixed;
+
+        inset: 0;
+
+        background: rgba(247, 249, 245, 0.72);
+
+        z-index: -2;
+
+        pointer-events: none;
+      }
+
+      /* =====================================================
+           HEADER
+        ===================================================== */
+
+      header {
+        height: 82px;
+
+        width: 100%;
+
+        background: rgba(255, 255, 255, 0.96);
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        border-bottom: 1px solid #d9e2d4;
+
+        box-shadow: 0 3px 15px rgba(0, 0, 0, 0.07);
+
+        position: relative;
+
+        z-index: 10;
+      }
+
+      .brand {
+        display: flex;
+
+        align-items: center;
+
+        gap: 12px;
+      }
+
+      .logo {
+        width: 46px;
+
+        height: 46px;
+
+        border-radius: 12px;
+
+        background: #527a43;
+
+        color: white;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        font-size: 23px;
+
+        font-weight: bold;
+      }
+
+      .brand-text h1 {
+        color: #365b32;
+
+        font-size: 25px;
+
+        font-weight: 700;
+
+        letter-spacing: 0.2px;
+      }
+
+      .brand-text p {
+        color: #737d73;
+
+        font-size: 13px;
+
+        margin-top: 2px;
+      }
+
+      /* =====================================================
+           MAIN CONTENT
+        ===================================================== */
+
+      main {
+        width: 100%;
+
+        max-width: 1080px;
+
+        margin: 0 auto;
+
+        padding: 35px 20px 90px;
+      }
+
+      /* =====================================================
+           SCREEN CONTROL
+        ===================================================== */
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      /* =====================================================
+           INSTRUCTION CARD
+        ===================================================== */
+
+      .instruction-card {
+        width: 100%;
+
+        max-width: 780px;
+
+        margin: 25px auto;
+
+        padding: 45px 48px;
+
+        border-radius: 24px;
+
+        text-align: center;
+
+        background:
+          linear-gradient(rgba(255, 255, 255, 0.87), rgba(255, 255, 255, 0.92)),
+          url("assets/northeast-landscape.jpg");
+
+        background-size: cover;
+
+        background-position: center;
+
+        border: 1px solid rgba(70, 100, 65, 0.13);
+
+        box-shadow: 0 12px 38px rgba(45, 70, 45, 0.13);
+      }
+
+      /* =====================================================
+           MOUNTAIN ICON
+        ===================================================== */
+
+      .mountain-icon {
+        width: 75px;
+
+        height: 58px;
+
+        margin: 0 auto 18px;
+
+        position: relative;
+      }
+
+      .mountain-icon::before {
+        content: "";
+
+        position: absolute;
+
+        left: 2px;
+
+        bottom: 0;
+
+        width: 0;
+
+        height: 0;
+
+        border-left: 34px solid transparent;
+
+        border-right: 34px solid transparent;
+
+        border-bottom: 48px solid #729266;
+      }
+
+      .mountain-icon::after {
+        content: "";
+
+        position: absolute;
+
+        right: 0;
+
+        bottom: 0;
+
+        width: 0;
+
+        height: 0;
+
+        border-left: 26px solid transparent;
+
+        border-right: 26px solid transparent;
+
+        border-bottom: 37px solid #a6ba9d;
+      }
+
+      /* =====================================================
+           INSTRUCTION TITLE
+        ===================================================== */
+
+      .instruction-card h2 {
+        font-size: 36px;
+
+        color: #365b32;
+
+        margin-bottom: 8px;
+      }
+
+      .subtitle {
+        color: #707970;
+
+        font-size: 18px;
+
+        margin-bottom: 30px;
+      }
+
+      /* =====================================================
+           INSTRUCTION BOX
+        ===================================================== */
+
+      .instruction-box {
+        text-align: left;
+
+        background: rgba(244, 248, 240, 0.95);
+
+        border-left: 5px solid #6d9460;
+
+        border-radius: 13px;
+
+        padding: 23px 29px;
+
+        margin-bottom: 30px;
+      }
+
+      .instruction-box h3 {
+        color: #3d6138;
+
+        font-size: 21px;
+
+        margin-bottom: 13px;
+      }
+
+      .instruction-box p {
+        font-size: 17px;
+
+        line-height: 1.65;
+
+        margin: 7px 0;
+
+        color: #37453a;
+      }
+
+      .instruction-box strong {
+        color: #365b32;
+      }
+
+      /* =====================================================
+           START BUTTON
+        ===================================================== */
+
+      .primary-btn {
+        border: none;
+
+        background: #527d45;
+
+        color: white;
+
+        padding: 17px 58px;
+
+        font-size: 20px;
+
+        font-weight: bold;
+
+        border-radius: 13px;
+
+        cursor: pointer;
+
+        transition:
+          background 0.2s ease,
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+
+        box-shadow: 0 5px 13px rgba(70, 100, 60, 0.18);
+      }
+
+      .primary-btn:hover {
+        background: #416736;
+
+        transform: translateY(-2px);
+
+        box-shadow: 0 7px 16px rgba(70, 100, 60, 0.23);
+      }
+
+      .primary-btn:active {
+        transform: scale(0.98);
+      }
+
+      /* =====================================================
+           GAME HEADER
+        ===================================================== */
+
+      .game-header {
+        background: rgba(255, 255, 255, 0.96);
+
+        border-radius: 19px;
+
+        padding: 18px 25px;
+
+        margin-bottom: 18px;
+
+        display: flex;
+
+        justify-content: space-between;
+
+        align-items: center;
+
+        gap: 20px;
+
+        box-shadow: 0 6px 22px rgba(45, 70, 45, 0.1);
+
+        border: 1px solid rgba(70, 100, 65, 0.08);
+      }
+
+      .game-title {
+        flex-shrink: 0;
+      }
+
+      .game-title h2 {
+        font-size: 27px;
+
+        color: #365b32;
+      }
+
+      .game-title p {
+        color: #7a8379;
+
+        margin-top: 4px;
+
+        font-size: 15px;
+      }
+
+      /* =====================================================
+           STATS
+        ===================================================== */
+
+      .stats {
+        display: flex;
+
+        gap: 10px;
+      }
+
+      .stat {
+        min-width: 105px;
+
+        background: #f1f5ed;
+
+        padding: 9px 14px;
+
+        border-radius: 11px;
+
+        text-align: center;
+      }
+
+      .stat span {
+        display: block;
+
+        font-size: 12px;
+
+        color: #758073;
+      }
+
+      .stat strong {
+        display: block;
+
+        font-size: 22px;
+
+        color: #365b32;
+
+        margin-top: 3px;
+      }
+
+      .mistake-stat strong {
+        color: #b15e45;
+      }
+
+      /* =====================================================
+           GAME AREA
+        ===================================================== */
+
+      .game-area {
+        position: relative;
+
+        overflow: hidden;
+
+        background: rgba(255, 255, 255, 0.95);
+
+        border-radius: 23px;
+
+        padding: 32px;
+
+        box-shadow: 0 9px 32px rgba(45, 70, 45, 0.12);
+
+        border: 1px solid rgba(70, 100, 65, 0.09);
+      }
+
+      /* =====================================================
+           LANDSCAPE INSIDE GAME
+           
+           IMPORTANT:
+           This is deliberately very faint.
+        ===================================================== */
+
+      .game-area::before {
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        background-image: url("assets/northeast-landscape.jpg");
+
+        background-size: cover;
+
+        background-position: center;
+
+        background-repeat: no-repeat;
+
+        opacity: 0.11;
+
+        z-index: 0;
+
+        pointer-events: none;
+      }
+
+      .game-area::after {
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        background: rgba(255, 255, 255, 0.52);
+
+        z-index: 0;
+
+        pointer-events: none;
+      }
+
+      /* =====================================================
+           GAME MESSAGE
+        ===================================================== */
+
+      .game-message {
+        position: relative;
+
+        z-index: 2;
+
+        text-align: center;
+
+        font-size: 20px;
+
+        font-weight: bold;
+
+        color: #526052;
+
+        margin-bottom: 26px;
+      }
+
+      /* =====================================================
+           NUMBER GRID
+           
+           5 COLUMNS × 4 ROWS
+        ===================================================== */
+
+      .number-grid {
+        position: relative;
+
+        z-index: 2;
+
+        width: 100%;
+
+        max-width: 780px;
+
+        margin: 0 auto;
+
+        display: grid;
+
+        grid-template-columns: repeat(5, 1fr);
+
+        gap: 16px;
+      }
+
+      /* =====================================================
+           NUMBER BUTTONS
+        ===================================================== */
+
+      .number-btn {
+        aspect-ratio: 1 / 1;
+
+        border: 3px solid #829e76;
+
+        background: rgba(255, 255, 255, 0.95);
+
+        color: #31542e;
+
+        border-radius: 17px;
+
+        font-size: 43px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        transition:
+          background 0.15s ease,
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+
+        box-shadow: 0 4px 11px rgba(40, 60, 40, 0.12);
+
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .number-btn:hover {
+        background: #edf4e9;
+
+        transform: scale(1.03);
+
+        box-shadow: 0 6px 14px rgba(40, 60, 40, 0.16);
+      }
+
+      .number-btn:focus {
+        outline: 4px solid rgba(82, 125, 69, 0.25);
+
+        outline-offset: 2px;
+      }
+
+      .number-btn.correct {
+        background: #668d59;
+
+        color: white;
+
+        border-color: #527a45;
+
+        transform: scale(0.95);
+
+        cursor: default;
+
+        box-shadow: none;
+      }
+
+      .number-btn.wrong {
+        background: #f6ddd6;
+
+        border-color: #bd674d;
+
+        animation: shake 0.3s;
+      }
+
+      .number-btn:disabled {
+        cursor: default;
+      }
+
+      /* =====================================================
+           WRONG ANSWER ANIMATION
+        ===================================================== */
+
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+
+        25% {
+          transform: translateX(-7px);
+        }
+
+        50% {
+          transform: translateX(7px);
+        }
+
+        75% {
+          transform: translateX(-7px);
+        }
+
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      /* =====================================================
+           RESULT SCREEN
+        ===================================================== */
+
+      .result-card {
+        width: 100%;
+
+        max-width: 680px;
+
+        margin: 65px auto;
+
+        padding: 52px 42px;
+
+        background: rgba(255, 255, 255, 0.96);
+
+        border-radius: 23px;
+
+        text-align: center;
+
+        box-shadow: 0 9px 32px rgba(45, 70, 45, 0.12);
+      }
+
+      .result-symbol {
+        width: 72px;
+
+        height: 72px;
+
+        border-radius: 50%;
+
+        background: #edf4e9;
+
+        color: #527d45;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-size: 36px;
+
+        font-weight: bold;
+
+        margin: 0 auto 20px;
+      }
+
+      .result-card h2 {
+        color: #365b32;
+
+        font-size: 35px;
+
+        margin-bottom: 15px;
+      }
+
+      .result-card p {
+        color: #6f796f;
+
+        font-size: 18px;
+
+        line-height: 1.7;
+
+        margin-bottom: 28px;
+      }
+
+      /* =====================================================
+           FOOTER
+        ===================================================== */
+
+      footer {
+        text-align: center;
+
+        padding: 11px;
+
+        background: rgba(255, 255, 255, 0.93);
+
+        color: #7a8379;
+
+        font-size: 12px;
+
+        border-top: 1px solid #dfe6da;
+
+        position: fixed;
+
+        bottom: 0;
+
+        left: 0;
+
+        width: 100%;
+
+        z-index: 10;
+      }
+
+      /* =====================================================
+           TABLET
+        ===================================================== */
+
+      @media (max-width: 850px) {
+        .game-header {
+          flex-direction: column;
+
+          align-items: center;
+
+          text-align: center;
+        }
+
+        .stats {
+          justify-content: center;
+        }
+
+        .number-grid {
+          gap: 12px;
+        }
+
+        .number-btn {
+          font-size: 36px;
+        }
+      }
+
+      /* =====================================================
+           MOBILE
+        ===================================================== */
+
+      @media (max-width: 550px) {
+        header {
+          height: 70px;
+        }
+
+        .brand {
+          gap: 9px;
+        }
+
+        .brand-text h1 {
+          font-size: 21px;
+        }
+
+        .brand-text p {
+          font-size: 11px;
+        }
+
+        .logo {
+          width: 40px;
+
+          height: 40px;
+
+          font-size: 20px;
+        }
+
+        main {
+          padding: 20px 10px 75px;
+        }
+
+        .instruction-card {
+          padding: 30px 18px;
+
+          margin: 15px auto;
+        }
+
+        .instruction-card h2 {
+          font-size: 29px;
+        }
+
+        .subtitle {
+          font-size: 16px;
+
+          margin-bottom: 24px;
+        }
+
+        .instruction-box {
+          padding: 18px;
+
+          margin-bottom: 24px;
+        }
+
+        .instruction-box h3 {
+          font-size: 19px;
+        }
+
+        .instruction-box p {
+          font-size: 16px;
+
+          line-height: 1.55;
+        }
+
+        .primary-btn {
+          padding: 15px 42px;
+
+          font-size: 18px;
+        }
+
+        .game-header {
+          padding: 15px;
+
+          gap: 13px;
+        }
+
+        .game-title h2 {
+          font-size: 23px;
+        }
+
+        .game-title p {
+          font-size: 13px;
+        }
+
+        .stats {
+          width: 100%;
+
+          gap: 6px;
+        }
+
+        .stat {
+          min-width: 0;
+
+          flex: 1;
+
+          padding: 8px 5px;
+        }
+
+        .stat span {
+          font-size: 10px;
+        }
+
+        .stat strong {
+          font-size: 18px;
+        }
+
+        .game-area {
+          padding: 15px;
+        }
+
+        .game-message {
+          font-size: 17px;
+
+          margin-bottom: 17px;
+        }
+
+        .number-grid {
+          gap: 7px;
+        }
+
+        .number-btn {
+          font-size: 27px;
+
+          border-radius: 10px;
+
+          border-width: 2px;
+        }
+
+        .result-card {
+          margin: 35px auto;
+
+          padding: 38px 20px;
+        }
+
+        .result-card h2 {
+          font-size: 29px;
+        }
+
+        .result-card p {
+          font-size: 16px;
+        }
+      }
+
+      /* =====================================================
+           VERY SMALL PHONES
+        ===================================================== */
+
+      @media (max-width: 380px) {
+        .number-grid {
+          gap: 5px;
+        }
+
+        .number-btn {
+          font-size: 23px;
+
+          border-radius: 8px;
+        }
+
+        .game-area {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
+
+    <header>
+      <div class="brand">
+        <div class="logo">M</div>
+
+        <div class="brand-text">
+          <h1>Memory Trail</h1>
+
+          <p>A Journey Through the Northeast</p>
+        </div>
+      </div>
+    </header>
+
+    <!-- =====================================================
+         MAIN
+    ===================================================== -->
+
+    <main>
+      <!-- =================================================
+             INSTRUCTION SCREEN
+        ================================================= -->
+
+      <section id="instructionScreen" class="screen active">
+        <div class="instruction-card">
+          <!-- Mountain illustration -->
+
+          <div class="mountain-icon"></div>
+
+          <h2>Memory Trail</h2>
+
+          <p class="subtitle">A Journey Through the Northeast</p>
+
+          <!-- Instructions -->
+
+          <div class="instruction-box">
+            <h3>How to Play</h3>
+
+            <p>
+              There are
+              <strong>20 numbers</strong>
+              on the screen.
+            </p>
+
+            <p>
+              Find and click
+              <strong>1</strong>
+              first.
+            </p>
+
+            <p>
+              Then find
+              <strong>2, 3, 4...</strong>
+              in order.
+            </p>
+
+            <p>
+              You have
+              <strong>10 minutes</strong>
+              to complete the game.
+            </p>
+
+            <p>
+              You can make up to
+              <strong>5 mistakes</strong>.
+            </p>
+
+            <p>Take your time. There is no need to hurry.</p>
+          </div>
+
+          <!-- Start -->
+
+          <button class="primary-btn" onclick="startGame()">Start Game</button>
+        </div>
+      </section>
+
+      <!-- =================================================
+             GAME SCREEN
+        ================================================= -->
+
+      <section id="gameScreen" class="screen">
+        <!-- Game information -->
+
+        <div class="game-header">
+          <div class="game-title">
+            <h2>Memory Trail</h2>
+
+            <p>Find the numbers in order</p>
+          </div>
+
+          <div class="stats">
+            <!-- Timer -->
+
+            <div class="stat">
+              <span> Time Left </span>
+
+              <strong id="timer"> 10:00 </strong>
+            </div>
+
+            <!-- Mistakes -->
+
+            <div class="stat mistake-stat">
+              <span> Mistakes </span>
+
+              <strong id="mistakes"> 0 / 5 </strong>
+            </div>
+
+            <!-- Next number -->
+
+            <div class="stat">
+              <span> Next Number </span>
+
+              <strong id="nextNumber"> 1 </strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- =================================================
+                 GAME AREA
+            ================================================= -->
+
+        <div class="game-area">
+          <div id="gameMessage" class="game-message">Find number 1</div>
+
+          <!-- Numbers are generated here -->
+
+          <div id="numberGrid" class="number-grid"></div>
+        </div>
+      </section>
+
+      <!-- =================================================
+             RESULT SCREEN
+        ================================================= -->
+
+      <section id="resultScreen" class="screen">
+        <div class="result-card">
+          <div id="resultIcon" class="result-symbol">✓</div>
+
+          <h2 id="resultTitle">Wonderful Work!</h2>
+
+          <p id="resultMessage"></p>
+
+          <button class="primary-btn" onclick="showInstructions()">
+            Play Again
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- =====================================================
+         FOOTER
+    ===================================================== -->
+
+    <footer>Memory Trail • Memory Support Activity</footer>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ===================================================== -->
+
+    <script>
+      /* =================================================
+           GAME VARIABLES
+        ================================================= */
+
+      let nextNumber = 1;
+
+      let mistakes = 0;
+
+      let timeLeft = 600;
+
+      let timerInterval = null;
+
+      let gameRunning = false;
+
+      /* =================================================
+           SHOW SCREEN
+        ================================================= */
+
+      function showScreen(screenId) {
+        document.querySelectorAll(".screen").forEach((screen) => {
+          screen.classList.remove("active");
+        });
+
+        document.getElementById(screenId).classList.add("active");
+      }
+
+      /* =================================================
+           SHOW INSTRUCTIONS
+        ================================================= */
+
+      function showInstructions() {
+        clearInterval(timerInterval);
+
+        gameRunning = false;
+
+        showScreen("instructionScreen");
+      }
+
+      /* =================================================
+           START GAME
+        ================================================= */
+
+      function startGame() {
+        /* Reset everything */
+
+        nextNumber = 1;
+
+        mistakes = 0;
+
+        timeLeft = 600;
+
+        gameRunning = true;
+
+        /* Update display */
+
+        updateStats();
+
+        /* Show game */
+
+        showScreen("gameScreen");
+
+        /* Create numbers */
+
+        createGrid();
+
+        /* Start timer */
+
+        startTimer();
+      }
+
+      /* =================================================
+           CREATE RANDOM NUMBER GRID
+        ================================================= */
+
+      function createGrid() {
+        const grid = document.getElementById("numberGrid");
+
+        /* Clear previous game */
+
+        grid.innerHTML = "";
+
+        /* Create numbers 1 to 20 */
+
+        let numbers = [];
+
+        for (let i = 1; i <= 20; i++) {
+          numbers.push(i);
+        }
+
+        /* =================================================
+               FISHER-YATES SHUFFLE
+
+               This makes the numbers random every game.
+            ================================================= */
+
+        for (let i = numbers.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+
+          [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+        }
+
+        /* =================================================
+               CREATE BUTTON FOR EACH NUMBER
+            ================================================= */
+
+        numbers.forEach((number) => {
+          const button = document.createElement("button");
+
+          button.className = "number-btn";
+
+          button.textContent = number;
+
+          button.setAttribute("aria-label", "Number " + number);
+
+          button.addEventListener("click", function () {
+            checkNumber(button, number);
+          });
+
+          grid.appendChild(button);
+        });
+      }
+
+      /* =================================================
+           CHECK CLICKED NUMBER
+        ================================================= */
+
+      function checkNumber(button, number) {
+        /* Do nothing if game ended */
+
+        if (!gameRunning) {
+          return;
+        }
+
+        /* =================================================
+               CORRECT NUMBER
+            ================================================= */
+
+        if (number === nextNumber) {
+          /* Mark correct */
+
+          button.classList.add("correct");
+
+          button.disabled = true;
+
+          /* Move to next number */
+
+          nextNumber++;
+
+          /* Update display */
+
+          updateStats();
+
+          /* =================================================
+                   GAME COMPLETED
+                ================================================= */
+
+          if (nextNumber > 20) {
+            finishGame(true);
+
+            return;
+          }
+
+          /* Tell player next number */
+
+          document.getElementById("gameMessage").textContent =
+            "Good! Now find number " + nextNumber;
+        } else {
+          /* =================================================
+               WRONG NUMBER
+            ================================================= */
+          mistakes++;
+
+          /* Visual feedback */
+
+          button.classList.add("wrong");
+
+          updateStats();
+
+          /* Remove animation */
+
+          setTimeout(() => {
+            button.classList.remove("wrong");
+          }, 350);
+
+          /* =================================================
+                   GAME ENDS AFTER MORE THAN 5 MISTAKES
+                ================================================= */
+
+          if (mistakes > 5) {
+            finishGame(false, "mistakes");
+
+            return;
+          }
+
+          /* Message */
+
+          document.getElementById("gameMessage").textContent =
+            "That's okay. Find number " + nextNumber;
+        }
+      }
+
+      /* =================================================
+           START TIMER
+        ================================================= */
+
+      function startTimer() {
+        clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+          if (!gameRunning) {
+            return;
+          }
+
+          timeLeft--;
+
+          updateTimer();
+
+          /* Time finished */
+
+          if (timeLeft <= 0) {
+            timeLeft = 0;
+
+            updateTimer();
+
+            finishGame(false, "time");
+          }
+        }, 1000);
+      }
+
+      /* =================================================
+           UPDATE TIMER DISPLAY
+        ================================================= */
+
+      function updateTimer() {
+        const minutes = Math.floor(timeLeft / 60);
+
+        const seconds = timeLeft % 60;
+
+        const formattedTime =
+          String(minutes).padStart(2, "0") +
+          ":" +
+          String(seconds).padStart(2, "0");
+
+        document.getElementById("timer").textContent = formattedTime;
+      }
+
+      /* =================================================
+           UPDATE GAME STATS
+        ================================================= */
+
+      function updateStats() {
+        document.getElementById("mistakes").textContent = mistakes + " / 5";
+
+        document.getElementById("nextNumber").textContent = nextNumber;
+
+        updateTimer();
+      }
+
+      /* =================================================
+           FINISH GAME
+        ================================================= */
+
+      function finishGame(success, reason = "") {
+        /* Stop timer */
+
+        clearInterval(timerInterval);
+
+        /* Stop clicks */
+
+        gameRunning = false;
+
+        /* Show result */
+
+        showScreen("resultScreen");
+
+        const icon = document.getElementById("resultIcon");
+
+        const title = document.getElementById("resultTitle");
+
+        const message = document.getElementById("resultMessage");
+
+        /* =================================================
+               SUCCESS
+            ================================================= */
+
+        if (success) {
+          icon.textContent = "✓";
+
+          title.textContent = "Wonderful Work!";
+
+          message.textContent =
+            "You successfully found all " +
+            "20 numbers. " +
+            "You completed the Memory Trail.";
+        } else if (reason === "mistakes") {
+          /* =================================================
+               TOO MANY MISTAKES
+            ================================================= */
+          icon.textContent = "•";
+
+          title.textContent = "Good Try!";
+
+          message.textContent =
+            "The game has ended after " +
+            "more than 5 mistakes. " +
+            "Take a little rest and try again " +
+            "when you are ready.";
+        } else if (reason === "time") {
+          /* =================================================
+               TIME UP
+            ================================================= */
+          icon.textContent = "•";
+
+          title.textContent = "Time's Up";
+
+          message.textContent =
+            "The 10-minute Memory Trail " +
+            "has ended. " +
+            "Well done for taking the time " +
+            "to exercise your memory.";
+        }
+      }
+    </script>
+  </body>
+</html>
