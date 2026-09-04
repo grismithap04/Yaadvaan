@@ -1,350 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
-    <title>Memory Care</title>
-
-    <link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yaadvaan Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<div class="app">
-
-    <!-- =====================================
-         FIRST TIME SETUP
-    ====================================== -->
-
-    <section id="setup-page" class="page">
-
-        <div class="card">
-
-            <h1>Memory Care</h1>
-
-            <p class="subtitle">
-                Caregiver Setup
-            </p>
-
-            <div class="step-indicator">
-                Step <span id="current-step">1</span> of 3
-            </div>
-
-
-            <!-- STEP 1 -->
-
-            <div id="step-1" class="setup-step">
-
-                <h2>Caregiver Account</h2>
-
-                <p>
-                    Create an account to manage the patient's profile.
-                </p>
-
-                <input
-                    type="text"
-                    id="caregiver-name"
-                    placeholder="Caregiver Name"
-                >
-
-                <input
-                    type="text"
-                    id="username"
-                    placeholder="Username"
-                >
-
-                <input
-                    type="password"
-                    id="password"
-                    placeholder="Password"
-                >
-
-                <button
-                    type="button"
-                    onclick="nextStep(2)"
-                >
-                    Continue
-                </button>
-
-            </div>
-
-
-            <!-- STEP 2 -->
-
-            <div id="step-2"
-                 class="setup-step hidden">
-
-                <h2>Patient Details</h2>
-
-                <p>
-                    Enter some basic information about the patient.
-                </p>
-
-                <input
-                    type="text"
-                    id="patient-name"
-                    placeholder="Patient Name"
-                >
-
-                <input
-                    type="number"
-                    id="patient-age"
-                    placeholder="Age"
-                >
-
-                <select id="patient-language">
-
-                    <option value="">
-                        Preferred Language
-                    </option>
-
-                    <option value="English">
-                        English
-                    </option>
-
-                    <option value="Hindi">
-                        Hindi
-                    </option>
-
-                    <option value="Assamese">
-                        Assamese
-                    </option>
-
-                    <option value="Bengali">
-                        Bengali
-                    </option>
-
-                    <option value="Other">
-                        Other
-                    </option>
-
-                </select>
-
-
-                <h3>Patient Face Registration</h3>
-
-                <p class="small-text">
-                    The camera will be used to register
-                    the patient's face.
-                </p>
-
-                <video
-                    id="register-video"
-                    autoplay
-                    playsinline>
-                </video>
-
-                <canvas
-                    id="register-canvas"
-                    class="hidden">
-                </canvas>
-
-                <button
-                    type="button"
-                    onclick="startRegistrationCamera()">
-
-                    Start Camera
-
-                </button>
-
-                <button
-                    type="button"
-                    onclick="captureFace()">
-
-                    Capture Face
-
-                </button>
-
-                <p id="face-status"></p>
-
-
-                <div class="button-row">
-
-                    <button
-                        type="button"
-                        class="secondary"
-                        onclick="nextStep(1)">
-
-                        Back
-
-                    </button>
-
-                    <button
-                        type="button"
-                        onclick="nextStep(3)">
-
-                        Continue
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- STEP 3 -->
-
-            <div id="step-3"
-                 class="setup-step hidden">
-
-                <h2>Family Members</h2>
-
-                <p>
-                    Add at least one family member.
-                </p>
-
-                <div id="family-list">
-
-                    <div class="family-member">
-
-                        <input
-                            type="text"
-                            placeholder="Family Member Name"
-                            class="family-name"
-                        >
-
-                        <input
-                            type="text"
-                            placeholder="Relationship"
-                            class="family-relation"
-                        >
-
-                    </div>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="add-button"
-                    onclick="addFamilyMember()">
-
-                    + Add Family Member
-
-                </button>
-
-
-                <div class="button-row">
-
-                    <button
-                        type="button"
-                        class="secondary"
-                        onclick="nextStep(2)">
-
-                        Back
-
-                    </button>
-
-                    <button
-                        type="button"
-                        onclick="finishSetup()">
-
-                        Finish Setup
-
-                    </button>
-
-                </div>
-
-            </div>
-
+  <main class="app">
+
+    <section id="role-page" class="page">
+      <div class="card">
+        <h1>Yaadvaan</h1>
+        <p class="subtitle">Memory-care dashboard</p>
+        <p>Are you a patient or a caregiver?</p>
+        <div class="role-grid">
+          <button type="button" onclick="chooseRole('patient')">I am a Patient</button>
+          <button type="button" onclick="chooseRole('caregiver')">I am a Caregiver</button>
         </div>
-
+        <p id="role-status" class="status"></p>
+      </div>
     </section>
 
-
-    <!-- =====================================
-         PATIENT LOGIN
-    ====================================== -->
-
-    <section
-        id="login-page"
-        class="page hidden">
-
-        <div class="card">
-
-            <h1>Welcome Back</h1>
-
-            <p id="welcome-text">
-                Please look at the camera.
-            </p>
-
-            <video
-                id="login-video"
-                autoplay
-                playsinline>
-            </video>
-
-            <canvas
-                id="login-canvas"
-                class="hidden">
-            </canvas>
-
-            <button
-                type="button"
-                onclick="startLoginCamera()">
-
-                Start Camera
-
-            </button>
-
-            <button
-                type="button"
-                onclick="recognizePatient()">
-
-                Recognize Me
-
-            </button>
-
-            <p id="login-status"></p>
-
-        </div>
-
+    <section id="caregiver-login-page" class="page hidden">
+      <div class="card">
+        <h1>Caregiver Login</h1>
+        <p class="subtitle">Enter the saved caregiver account details.</p>
+        <input id="login-username" type="text" placeholder="Username">
+        <input id="login-password" type="password" placeholder="Password">
+        <button type="button" onclick="loginCaregiver()">Login</button>
+        <button type="button" class="secondary" onclick="showPage('role-page')">Back</button>
+        <p id="caregiver-login-status" class="status"></p>
+      </div>
     </section>
 
-
-    <!-- =====================================
-         GAME PAGE
-    ====================================== -->
-
-    <section
-        id="game-page"
-        class="page hidden">
-
-        <div class="game-container">
-
-            <h1 id="game-title">
-                Today's Game
-            </h1>
-
-            <p id="game-message">
-                Loading game...
-            </p>
-
-            <div id="game-area"></div>
-
-            <button
-                type="button"
-                onclick="logout()">
-
-                Exit
-
-            </button>
-
-        </div>
-
+    <section id="patient-login-page" class="page hidden">
+      <div class="card">
+        <h1>Patient Verification</h1>
+        <p id="patient-login-welcome" class="subtitle">Please look at the camera.</p>
+        <video id="login-video" autoplay playsinline></video>
+        <button type="button" onclick="startLoginCamera()">Start Camera</button>
+        <button type="button" onclick="recognizePatient()">Verify My Face</button>
+        <button type="button" class="secondary" onclick="showPage('role-page')">Back</button>
+        <p id="login-status" class="status"></p>
+        <p id="login-warning" class="warning"></p>
+      </div>
     </section>
 
+    <section id="setup-page" class="page hidden">
+      <div class="card">
+        <h1>Patient Registration</h1>
+        <p class="subtitle">Create the patient profile</p>
+        <div class="step-indicator">Step <span id="current-step">1</span> of 4</div>
+
+        <div id="step-1" class="setup-step">
+          <h2>Caregiver Details</h2>
+          <input id="caregiver-name" type="text" placeholder="Caregiver name">
+          <input id="caregiver-dob" type="date" aria-label="Caregiver date of birth">
+          <input id="caregiver-email" type="email" placeholder="Caregiver email">
+          <input id="caregiver-phone" type="tel" placeholder="Caregiver phone number">
+          <input id="caregiver-username" type="text" placeholder="Patient ID will be generated automatically" readonly>
+          <input id="caregiver-password" type="password" placeholder="Create password">
+          <button type="button" onclick="nextStep(2)">Continue</button>
+          <button type="button" class="secondary" onclick="showPage('role-page')">Cancel</button>
+        </div>
+
+        <div id="step-2" class="setup-step hidden">
+          <h2>Patient Details</h2>
+          <p class="small-text">Patient ID: <strong id="patient-id-preview">YAD0001</strong></p>
+          <input id="patient-name" type="text" placeholder="Patient name">
+          <input id="patient-dob" type="date" aria-label="Patient date of birth">
+          <input id="patient-email" type="email" placeholder="Patient email (optional)">
+          <select id="patient-language">
+            <option value="">Preferred language</option>
+            <option>Assamese</option>
+            <option>Bengali</option>
+            <option>Bodo</option>
+            <option>English</option>
+            <option>Garo</option>
+            <option>Khasi</option>
+            <option>Manipuri</option>
+            <option>Mizo</option>
+            <option>Nagamese</option>
+            <option>Nepali</option>
+            <option>Tripuri</option>
+          </select>
+          <button type="button" onclick="nextStep(3)">Continue</button>
+          <button type="button" class="secondary" onclick="nextStep(1)">Back</button>
+        </div>
+
+        <div id="step-3" class="setup-step hidden">
+          <h2>Register Patient Face</h2>
+          <p class="small-text">Only the patient should be visible. Use good lighting and keep the face inside the camera frame.</p>
+          <video id="register-video" autoplay playsinline></video>
+          <button type="button" onclick="startRegistrationCamera()">Start Camera</button>
+          <button type="button" onclick="captureFace()">Capture Patient Face</button>
+          <p id="face-status" class="status"></p>
+          <button type="button" onclick="nextStep(4)">Continue</button>
+          <button type="button" class="secondary" onclick="nextStep(2)">Back</button>
+        </div>
+
+        <div id="step-4" class="setup-step hidden">
+  <h2>Caregiver Guidance</h2>
+
+  <p class="small-text">
+    Before completing registration, please read the mandatory dementia-care
+    guidance for caregivers.
+  </p>
+
+  <a
+    href="https://www.nccdp.org/the-four-rs-of-dementia-care-a-guide-for-caregivers/"
+    target="_blank"
+    rel="noopener"
+  >
+    Read the Four R's of Dementia Care
+  </a>
+
+  <label class="check-row">
+    <input
+      id="care-guide-read"
+      type="checkbox"
+    >
+    I have read and understood the caregiver guidance.
+  </label>
+
+  <h2>Family Member</h2>
+
+  <p>Would you like to add a family member of the patient?</p>
+
+  <div class="button-row">
+    <button
+      type="button"
+      onclick="setFamilyChoice(true)"
+    >
+      Yes
+    </button>
+
+    <button
+      type="button"
+      class="secondary"
+      onclick="setFamilyChoice(false)"
+    >
+      No
+    </button>
+  </div>
+
+  <div id="family-form" class="hidden">
+    <input
+      id="family-name"
+      type="text"
+      placeholder="Family member name"
+    >
+
+    <input
+      id="family-relationship"
+      type="text"
+      placeholder="Relationship to patient"
+    >
+
+    <input
+      id="family-phone"
+      type="tel"
+      placeholder="Family member phone number"
+    >
+  </div>
+
+  <div class="button-row">
+    <button
+      type="button"
+      class="secondary"
+      onclick="nextStep(3)"
+    >
+      Back
+    </button>
+
+    <button
+      type="button"
+      onclick="finishSetup()"
+    >
+      Finish Registration
+    </button>
+  </div>
+
+  <p id="setup-status" class="status"></p>
 </div>
+      </div>
+    </section>
 
+    <section id="caregiver-dashboard-page" class="page hidden">
+      <div class="dashboard-header">
+        <div>
+          <h1>Caregiver Dashboard</h1>
+          <p id="dashboard-welcome" class="subtitle"></p>
+        </div>
+        <button type="button" class="secondary" onclick="logout()">Logout</button>
+      </div>
 
-<script src="script.js"></script>
+      <div class="overview-grid">
+        <article class="panel">
+          <h2>Patient Overview</h2>
+          <p><strong>Name:</strong> <span id="overview-name">—</span></p>
+          <p><strong>Patient ID:</strong> <span id="overview-id">—</span></p>
+          <p><strong>Last active:</strong> <span id="overview-last-active">Not recorded</span></p>
+          <p><strong>Session duration:</strong> <span id="overview-duration">Not recorded</span></p>
+          <p><strong>Games completed:</strong> <span id="overview-games">0</span></p>
+        </article>
 
+        <article class="panel clickable-panel" onclick="togglePanel('today-panel')">
+          <h2>1. Today's Session</h2>
+          <p>View detailed session and game results.</p>
+          <div id="today-panel" class="panel-details hidden">
+            <p>No games have been added yet. The dashboard is ready for testing.</p>
+          </div>
+        </article>
+
+        <article class="panel clickable-panel" onclick="togglePanel('cognitive-panel')">
+          <h2>2. Cognitive Areas</h2>
+          <p>Memory, attention, executive function, language, and visuospatial skills.</p>
+          <div id="cognitive-panel" class="panel-details hidden">
+            <ul>
+              <li>Memory: No results yet</li>
+              <li>Attention: No results yet</li>
+              <li>Executive function: No results yet</li>
+              <li>Language: No results yet</li>
+              <li>Visuospatial: No results yet</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="panel clickable-panel" onclick="togglePanel('progress-panel')">
+          <h2>3. Progress Over Time</h2>
+          <p>Track accuracy, time, and completion trends.</p>
+          <div id="progress-panel" class="panel-details hidden">
+            <p>Progress charts will appear here after game data is connected.</p>
+          </div>
+        </article>
+
+        <article class="panel clickable-panel" onclick="togglePanel('observations-panel')">
+          <h2>4. Recent Observations</h2>
+          <p>Review skipped games, unusual duration, and repeated difficulty.</p>
+          <div id="observations-panel" class="panel-details hidden">
+            <p>No observations recorded yet.</p>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2>Medicine Tracking</h2>
+          <label class="check-row"><input id="medicine-taken" type="checkbox" onchange="saveWellbeing()"> Medicine taken today</label>
+          <input id="medicine-notes" type="text" placeholder="Medicine notes" onchange="saveWellbeing()">
+        </article>
+
+        <article class="panel">
+          <h2>Overall Well-being</h2>
+          <select id="wellbeing" onchange="saveWellbeing()">
+            <option value="">Select today's well-being</option>
+            <option>Very good</option>
+            <option>Good</option>
+            <option>Okay</option>
+            <option>Needs attention</option>
+          </select>
+          <textarea id="wellbeing-notes" placeholder="Additional notes" onchange="saveWellbeing()"></textarea>
+          <p id="wellbeing-status" class="small-text"></p>
+        </article>
+
+        <article class="panel">
+          <h2>Dementia Care Guidance</h2>
+          <p>Read the mandatory caregiver guidance before continuing.</p>
+          <a href="https://www.nccdp.org/the-four-rs-of-dementia-care-a-guide-for-caregivers/" target="_blank" rel="noopener">Open the Four R's guide</a>
+          <label class="check-row">
+            <input id="care-guide-read" type="checkbox" onchange="saveGuideConfirmation()">
+            I have read and understood the guide.
+          </label>
+        </article>
+      </div>
+    </section>
+
+    <section id="patient-home-page" class="page hidden">
+      <div class="card">
+        <h1 id="patient-home-title">Welcome</h1>
+        <p class="subtitle">Your patient dashboard is ready.</p>
+        <p id="patient-home-message">Here are three simple daily care reminders:</p>
+         <ul id="patient-guidelines" class="patient-guidelines"></ul>
+        <button type="button" class="secondary" onclick="logout()">Logout</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+  <script src="script.js"></script>
 </body>
-
 </html>
