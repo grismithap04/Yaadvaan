@@ -1,9 +1,17 @@
 import sqlite3InitModule from "@sqlite.org/sqlite-wasm";
 
+/*
+  ==========================================
+  DATABASE
+  ==========================================
+*/
+
 let db = null;
 
 /*
-  Initialize SQLite database.
+  ==========================================
+  INITIALIZE DATABASE
+  ==========================================
 */
 
 async function initDatabase() {
@@ -30,10 +38,13 @@ async function initDatabase() {
   db = new sqlite3.oo1.OpfsDb("/sih_game_results.sqlite3");
 
   /*
-    Create base table if it does not exist.
+    ==========================================
+    CREATE TABLE
+    ==========================================
   */
 
   db.exec(`
+
     CREATE TABLE IF NOT EXISTS game_results (
 
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,11 +61,11 @@ async function initDatabase() {
 
       total_numbers INTEGER NOT NULL DEFAULT 0,
 
-      score INTEGER NOT NULL,
+      score INTEGER NOT NULL DEFAULT 0,
 
-      mistakes INTEGER NOT NULL,
+      mistakes INTEGER NOT NULL DEFAULT 0,
 
-      time_taken INTEGER NOT NULL,
+      time_taken INTEGER NOT NULL DEFAULT 0,
 
       reaction_times TEXT NOT NULL DEFAULT '[]',
 
@@ -73,27 +84,17 @@ async function initDatabase() {
       synced_at TEXT
 
     );
+
   `);
 
   /*
     ==========================================
     DATABASE MIGRATION
     ==========================================
-
-    If the database was created using your
-    previous version, the table already exists.
-
-    CREATE TABLE IF NOT EXISTS will NOT add
-    new columns to an existing table.
-
-    Therefore we check existing columns and
-    add the missing ones.
   */
 
   const tableInfo = db.exec({
-    sql: `
-      PRAGMA table_info(game_results);
-    `,
+    sql: `PRAGMA table_info(game_results);`,
 
     returnValue: "resultRows",
   });
@@ -101,63 +102,116 @@ async function initDatabase() {
   const existingColumns = new Set(tableInfo.map((row) => row[1]));
 
   /*
-    Add missing columns from the
-    new metrics system.
+    Add missing columns.
   */
 
   if (!existingColumns.has("level")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN level INTEGER NOT NULL DEFAULT 1;
+
+      ADD COLUMN level
+      INTEGER NOT NULL DEFAULT 1;
+
     `);
   }
 
   if (!existingColumns.has("difficulty")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN difficulty TEXT NOT NULL DEFAULT 'easy';
+
+      ADD COLUMN difficulty
+      TEXT NOT NULL DEFAULT 'easy';
+
     `);
   }
 
   if (!existingColumns.has("total_numbers")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN total_numbers INTEGER NOT NULL DEFAULT 0;
+
+      ADD COLUMN total_numbers
+      INTEGER NOT NULL DEFAULT 0;
+
     `);
   }
 
   if (!existingColumns.has("reaction_times")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN reaction_times TEXT NOT NULL DEFAULT '[]';
+
+      ADD COLUMN reaction_times
+      TEXT NOT NULL DEFAULT '[]';
+
     `);
   }
 
   if (!existingColumns.has("reaction_time_std_dev")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN reaction_time_std_dev REAL NOT NULL DEFAULT 0;
+
+      ADD COLUMN reaction_time_std_dev
+      REAL NOT NULL DEFAULT 0;
+
     `);
   }
 
   if (!existingColumns.has("error_log")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN error_log TEXT NOT NULL DEFAULT '[]';
+
+      ADD COLUMN error_log
+      TEXT NOT NULL DEFAULT '[]';
+
     `);
   }
 
   if (!existingColumns.has("hesitation_events")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN hesitation_events TEXT NOT NULL DEFAULT '[]';
+
+      ADD COLUMN hesitation_events
+      TEXT NOT NULL DEFAULT '[]';
+
     `);
   }
 
   if (!existingColumns.has("completed")) {
     db.exec(`
+
       ALTER TABLE game_results
-      ADD COLUMN completed INTEGER NOT NULL DEFAULT 0;
+
+      ADD COLUMN completed
+      INTEGER NOT NULL DEFAULT 0;
+
+    `);
+  }
+
+  if (!existingColumns.has("synced")) {
+    db.exec(`
+
+      ALTER TABLE game_results
+
+      ADD COLUMN synced
+      INTEGER NOT NULL DEFAULT 0;
+
+    `);
+  }
+
+  if (!existingColumns.has("synced_at")) {
+    db.exec(`
+
+      ALTER TABLE game_results
+
+      ADD COLUMN synced_at
+      TEXT;
+
     `);
   }
 
@@ -165,7 +219,9 @@ async function initDatabase() {
 }
 
 /*
-  Save game result.
+  ==========================================
+  SAVE RESULT
+  ==========================================
 */
 
 async function saveResult(data) {
@@ -175,6 +231,7 @@ async function saveResult(data) {
 
   db.exec({
     sql: `
+
       INSERT INTO game_results (
 
         sync_id,
@@ -246,6 +303,7 @@ async function saveResult(data) {
         0
 
       );
+
     `,
 
     bind: {
@@ -289,7 +347,92 @@ async function saveResult(data) {
 }
 
 /*
-  Get unsynchronized results.
+  ==========================================
+  GET RECENT SESSIONS
+  ==========================================
+*/
+
+async function getRecentSessions(
+  userId,
+
+  gameName,
+
+  limit = 3,
+) {
+  if (!db) {
+    await initDatabase();
+  }
+
+  const safeLimit = Math.max(1, Math.min(Number(limit) || 3, 20));
+
+  return db.exec({
+    sql: `
+
+      SELECT
+
+        id,
+
+        sync_id,
+
+        user_id,
+
+        game_name,
+
+        level,
+
+        difficulty,
+
+        total_numbers,
+
+        score,
+
+        mistakes,
+
+        time_taken,
+
+        reaction_times,
+
+        reaction_time_std_dev,
+
+        error_log,
+
+        hesitation_events,
+
+        completed,
+
+        completed_at,
+
+        synced
+
+      FROM game_results
+
+      WHERE user_id =
+        $user_id
+
+      AND game_name =
+        $game_name
+
+      ORDER BY
+        id DESC
+
+      LIMIT ${safeLimit};
+
+    `,
+
+    bind: {
+      $user_id: userId,
+
+      $game_name: gameName,
+    },
+
+    returnValue: "resultRows",
+  });
+}
+
+/*
+  ==========================================
+  GET UNSYNCED RESULTS
+  ==========================================
 */
 
 async function getUnsyncedResults() {
@@ -299,6 +442,7 @@ async function getUnsyncedResults() {
 
   return db.exec({
     sql: `
+
       SELECT
 
         id,
@@ -338,6 +482,7 @@ async function getUnsyncedResults() {
       WHERE synced = 0
 
       ORDER BY id ASC;
+
     `,
 
     returnValue: "resultRows",
@@ -345,7 +490,9 @@ async function getUnsyncedResults() {
 }
 
 /*
-  Mark result as synchronized.
+  ==========================================
+  MARK RESULT AS SYNCHRONIZED
+  ==========================================
 */
 
 async function markAsSynced(syncId) {
@@ -355,15 +502,19 @@ async function markAsSynced(syncId) {
 
   db.exec({
     sql: `
+
       UPDATE game_results
 
       SET
 
         synced = 1,
 
-        synced_at = $synced_at
+        synced_at =
+          $synced_at
 
-      WHERE sync_id = $sync_id;
+      WHERE sync_id =
+        $sync_id;
+
     `,
 
     bind: {
@@ -379,7 +530,9 @@ async function markAsSynced(syncId) {
 }
 
 /*
-  Get all results.
+  ==========================================
+  GET ALL RESULTS
+  ==========================================
 */
 
 async function getAllResults() {
@@ -389,11 +542,13 @@ async function getAllResults() {
 
   return db.exec({
     sql: `
+
       SELECT *
 
       FROM game_results
 
       ORDER BY id DESC;
+
     `,
 
     returnValue: "resultRows",
@@ -401,7 +556,52 @@ async function getAllResults() {
 }
 
 /*
-  Worker message handler.
+  ==========================================
+  CLEAR ALL RESULTS
+  ==========================================
+
+  This is ONLY for testing/resetting
+  the prototype.
+
+  It is NOT called automatically.
+  ==========================================
+*/
+
+async function clearAllResults() {
+  if (!db) {
+    await initDatabase();
+  }
+
+  db.exec(`
+
+    DELETE FROM game_results;
+
+  `);
+
+  /*
+    Reset SQLite AUTOINCREMENT counter.
+  */
+
+  db.exec(`
+
+    DELETE FROM sqlite_sequence
+
+    WHERE name =
+      'game_results';
+
+  `);
+
+  return {
+    success: true,
+
+    message: "All game results deleted.",
+  };
+}
+
+/*
+  ==========================================
+  WORKER MESSAGE HANDLER
+  ==========================================
 */
 
 self.onmessage = async (event) => {
@@ -409,8 +609,8 @@ self.onmessage = async (event) => {
 
   try {
     /*
-      INITIALIZE
-    */
+        INITIALIZE
+      */
 
     if (action === "init") {
       await initDatabase();
@@ -425,8 +625,8 @@ self.onmessage = async (event) => {
     }
 
     /*
-      SAVE RESULT
-    */
+        SAVE RESULT
+      */
 
     if (action === "saveResult") {
       const result = await saveResult(data);
@@ -441,8 +641,32 @@ self.onmessage = async (event) => {
     }
 
     /*
-      GET UNSYNCED
-    */
+        GET RECENT SESSIONS
+      */
+
+    if (action === "getRecentSessions") {
+      const results = await getRecentSessions(
+        data.user_id,
+
+        data.game_name,
+
+        data.limit,
+      );
+
+      self.postMessage({
+        requestId,
+
+        success: true,
+
+        results,
+      });
+
+      return;
+    }
+
+    /*
+        GET UNSYNCED
+      */
 
     if (action === "getUnsynced") {
       const results = await getUnsyncedResults();
@@ -459,8 +683,8 @@ self.onmessage = async (event) => {
     }
 
     /*
-      MARK SYNCED
-    */
+        MARK SYNCED
+      */
 
     if (action === "markSynced") {
       const result = await markAsSynced(data.sync_id);
@@ -475,8 +699,8 @@ self.onmessage = async (event) => {
     }
 
     /*
-      GET ALL
-    */
+        GET ALL
+      */
 
     if (action === "getAll") {
       const results = await getAllResults();
@@ -493,8 +717,24 @@ self.onmessage = async (event) => {
     }
 
     /*
-      UNKNOWN ACTION
-    */
+        CLEAR ALL
+      */
+
+    if (action === "clearAll") {
+      const result = await clearAllResults();
+
+      self.postMessage({
+        requestId,
+
+        ...result,
+      });
+
+      return;
+    }
+
+    /*
+        UNKNOWN ACTION
+      */
 
     throw new Error(`Unknown SQLite action: ${action}`);
   } catch (error) {

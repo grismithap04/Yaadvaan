@@ -3,7 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>স্মৃতি যাত্ৰা</title>
+
+    <title>Count Next</title>
 
     <style>
       * {
@@ -35,6 +36,7 @@
       }
 
       /* HEADER */
+
       header {
         height: 82px;
         width: 100%;
@@ -80,6 +82,7 @@
       }
 
       /* MAIN */
+
       main {
         width: 100%;
         max-width: 1080px;
@@ -87,7 +90,6 @@
         padding: 35px 20px 90px;
       }
 
-      /* SCREEN */
       .screen {
         display: none;
       }
@@ -97,6 +99,7 @@
       }
 
       /* INSTRUCTION CARD */
+
       .instruction-card {
         width: 100%;
         max-width: 780px;
@@ -178,58 +181,18 @@
         color: #365b32;
       }
 
-      /* LEVEL SELECTION */
-      .selection-section {
-        margin-bottom: 25px;
-      }
-
-      .selection-section h3 {
-        color: #3d6138;
-        font-size: 20px;
-        margin-bottom: 14px;
-      }
-
-      .level-buttons,
-      .difficulty-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 12px;
-        flex-wrap: wrap;
-      }
-
-      .level-btn,
-      .difficulty-btn {
-        border: 2px solid #829e76;
-        background: white;
-        color: #365b32;
-        padding: 12px 25px;
-        border-radius: 11px;
+      .adaptive-info {
+        background: #f1f6ee;
+        border-radius: 13px;
+        padding: 16px 20px;
+        margin-bottom: 28px;
+        color: #526052;
         font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.2s ease;
+        line-height: 1.6;
       }
 
-      .level-btn:hover,
-      .difficulty-btn:hover {
-        background: #edf4e9;
-      }
+      /* BUTTON */
 
-      .level-btn.selected,
-      .difficulty-btn.selected {
-        background: #527d45;
-        color: white;
-        border-color: #527d45;
-      }
-
-      /* DIFFICULTY INFO */
-      .difficulty-info {
-        margin-top: 14px;
-        color: #737d73;
-        font-size: 14px;
-      }
-
-      /* PRIMARY BUTTON */
       .primary-btn {
         border: none;
         background: #527d45;
@@ -256,7 +219,13 @@
         transform: scale(0.98);
       }
 
+      .primary-btn:disabled {
+        opacity: 0.7;
+        cursor: wait;
+      }
+
       /* GAME HEADER */
+
       .game-header {
         background: rgba(255, 255, 255, 0.96);
         border-radius: 19px;
@@ -316,6 +285,7 @@
       }
 
       /* GAME AREA */
+
       .game-area {
         position: relative;
         overflow: hidden;
@@ -335,25 +305,6 @@
         color: #526052;
         margin-bottom: 26px;
       }
-
-      /*
-        GRID SIZE IS SET BY JAVASCRIPT.
-
-        Level 1:
-        9  = 3 x 3
-        12 = 3 x 4
-        25 = 5 x 5
-
-        Level 2:
-        20 = 4 x 5
-        24 = 4 x 6
-        28 = 4 x 7
-
-        Level 3:
-        30 = 5 x 6
-        36 = 6 x 6
-        42 = 6 x 7
-      */
 
       .number-grid {
         position: relative;
@@ -438,6 +389,7 @@
       }
 
       /* RESULT */
+
       .result-card {
         width: 100%;
         max-width: 680px;
@@ -477,6 +429,7 @@
       }
 
       /* FOOTER */
+
       footer {
         text-align: center;
         padding: 11px;
@@ -492,6 +445,7 @@
       }
 
       /* TABLET */
+
       @media (max-width: 850px) {
         .game-header {
           flex-direction: column;
@@ -513,6 +467,7 @@
       }
 
       /* MOBILE */
+
       @media (max-width: 550px) {
         header {
           height: 70px;
@@ -568,15 +523,13 @@
           line-height: 1.55;
         }
 
+        .adaptive-info {
+          font-size: 15px;
+        }
+
         .primary-btn {
           padding: 15px 42px;
           font-size: 18px;
-        }
-
-        .level-btn,
-        .difficulty-btn {
-          padding: 10px 18px;
-          font-size: 14px;
         }
 
         .game-header {
@@ -645,6 +598,7 @@
       }
 
       /* VERY SMALL PHONES */
+
       @media (max-width: 380px) {
         .number-grid {
           gap: 5px;
@@ -664,246 +618,242 @@
 
   <body>
     <!-- HEADER -->
+
     <header>
       <div class="brand">
         <div class="logo">M</div>
 
         <div class="brand-text">
-          <h1>স্মৃতি যাত্ৰা</h1>
-          <p>উত্তৰ-পূৰ্বাঞ্চলৰ মাজেৰে এক যাত্ৰা</p>
+          <h1>স্মৃতি যাত্ৰা (Memory Journey)</h1>
+          <p>
+            উত্তৰ-পূৰ্বাঞ্চলৰ মাজেৰে এক যাত্ৰা (A journey through North-East
+            India)
+          </p>
         </div>
       </div>
     </header>
 
-    <!-- MAIN -->
     <main>
       <!-- INSTRUCTION SCREEN -->
+
       <section id="instructionScreen" class="screen active">
         <div class="instruction-card">
           <div class="mountain-icon"></div>
 
-          <h2>স্মৃতি যাত্ৰা</h2>
+          <h2>Count Next</h2>
 
-          <p class="subtitle">উত্তৰ-পূৰ্বাঞ্চলৰ মাজেৰে এক যাত্ৰা</p>
+          <p class="subtitle">স্মৃতি যাত্ৰা (Memory Journey)</p>
 
           <div class="instruction-box">
-            <h3>কেনেকৈ খেলিব</h3>
+            <h3>কেনেকৈ খেলিব (How to play)</h3>
 
             <p>
-              পৰ্দাত
-              <strong id="instructionNumberCount">৯টা সংখ্যা</strong>
-              আছে।
+              পৰ্দাত <strong>বিভিন্ন সংখ্যা (different numbers)</strong> আছে।
             </p>
 
-            <p>
-              প্ৰথমে
-              <strong>১</strong>
-              বিচাৰি ক্লিক কৰক।
-            </p>
+            <p>প্ৰথমে <strong>১ (1)</strong> বিচাৰি ক্লিক কৰক।</p>
 
             <p>
-              তাৰ পিছত
-              <strong>২, ৩, ৪...</strong>
+              তাৰ পিছত <strong>২, ৩, ৪... (2, 3, 4...)</strong>
               ক্ৰম অনুসৰি বিচাৰি ক্লিক কৰক।
             </p>
 
-            <p>লাহে-ধীৰে খেলক। খৰখেদা কৰাৰ প্ৰয়োজন নাই।</p>
+            <p>
+              লাহে-ধীৰে খেলক। খৰখেদা কৰাৰ প্ৰয়োজন নাই। (Play calmly. There is
+              no need to hurry.)
+            </p>
 
             <p>
-              আপুনি সৰ্বাধিক
-              <strong>৫টা ভুল</strong>
+              আপুনি সৰ্বাধিক <strong>৫টা ভুল (5 mistakes)</strong>
               কৰিব পাৰে।
             </p>
           </div>
 
-          <!-- LEVEL -->
-          <div class="selection-section">
-            <h3>স্তৰ নিৰ্বাচন কৰক</h3>
+          <div class="adaptive-info">
+            <strong>সাজু নেকি? (Are you ready?)</strong>
 
-            <div class="level-buttons">
-              <button
-                class="level-btn selected"
-                id="level1Btn"
-                onclick="selectLevel(1)"
-              >
-                স্তৰ ১
-              </button>
+            <br />
 
-              <button class="level-btn" id="level2Btn" onclick="selectLevel(2)">
-                স্তৰ ২
-              </button>
+            আপোনাৰ আগৰ খেলৰ ফলাফল বিশ্লেষণ কৰি পৰৱৰ্তী খেলৰ স্তৰ
+            স্বয়ংক্ৰিয়ভাৱে নিৰ্ধাৰণ কৰা হ'ব। (Your previous game performance
+            will determine the level of your next game.)
 
-              <button class="level-btn" id="level3Btn" onclick="selectLevel(3)">
-                স্তৰ ৩
-              </button>
-            </div>
+            <br /><br />
+
+            <strong>দিনটোত মাত্ৰ এটা খেল। (Only one game per day.)</strong>
           </div>
 
-          <!-- DIFFICULTY -->
-          <div class="selection-section">
-            <h3>কঠিনতাৰ স্তৰ নিৰ্বাচন কৰক</h3>
-
-            <div class="difficulty-buttons">
-              <button
-                class="difficulty-btn selected"
-                id="easyBtn"
-                onclick="selectDifficulty('easy')"
-              >
-                সহজ
-              </button>
-
-              <button
-                class="difficulty-btn"
-                id="mediumBtn"
-                onclick="selectDifficulty('medium')"
-              >
-                মধ্যম
-              </button>
-
-              <button
-                class="difficulty-btn"
-                id="hardBtn"
-                onclick="selectDifficulty('hard')"
-              >
-                কঠিন
-              </button>
-            </div>
-
-            <p class="difficulty-info" id="difficultyInfo">
-              স্তৰ ১ • সহজ • ৯টা সংখ্যা
-            </p>
-          </div>
-
-          <button class="primary-btn" onclick="startGame()">
-            খেল আৰম্ভ কৰক
+          <button id="startButton" class="primary-btn" onclick="startGame()">
+            Play
           </button>
         </div>
       </section>
 
       <!-- GAME SCREEN -->
+
       <section id="gameScreen" class="screen">
         <div class="game-header">
           <div class="game-title">
-            <h2>স্মৃতি যাত্ৰা</h2>
+            <h2>Count Next</h2>
 
-            <p id="difficultyText">
-              স্তৰ ১ • সহজ • সংখ্যাবোৰ ক্ৰম অনুসৰি বিচাৰক
-            </p>
+            <p id="difficultyText">স্তৰ ১ (Level 1) • সহজ (Easy)</p>
           </div>
 
           <div class="stats">
             <div class="stat">
-              <span>সময়</span>
-              <strong id="timer">00:00</strong>
+              <span>সময় (Time)</span>
+
+              <strong id="timer"> 00:00 </strong>
             </div>
 
             <div class="stat mistake-stat">
-              <span>ভুল</span>
-              <strong id="mistakes">0 / 5</strong>
+              <span>ভুল (Mistakes)</span>
+
+              <strong id="mistakes"> 0 / 5 </strong>
             </div>
 
             <div class="stat">
-              <span>পৰৱৰ্তী সংখ্যা</span>
-              <strong id="nextNumber">1</strong>
+              <span>পৰৱৰ্তী সংখ্যা (Next number)</span>
+
+              <strong id="nextNumber"> 1 </strong>
             </div>
           </div>
         </div>
 
         <div class="game-area">
-          <div id="gameMessage" class="game-message">১ নম্বৰটো বিচাৰক</div>
+          <div id="gameMessage" class="game-message">
+            ১ নম্বৰটো বিচাৰক (Find number 1)
+          </div>
 
           <div id="numberGrid" class="number-grid"></div>
         </div>
       </section>
 
       <!-- RESULT SCREEN -->
+
       <section id="resultScreen" class="screen">
         <div class="result-card">
           <div id="resultIcon" class="result-symbol">✓</div>
 
-          <h2 id="resultTitle">বৰ সুন্দৰ কাম!</h2>
+          <h2 id="resultTitle">বৰ সুন্দৰ কাম! (Great job!)</h2>
 
           <p id="resultMessage"></p>
 
-          <button class="primary-btn" onclick="showInstructions()">
-            আকৌ খেলক
-          </button>
+          <button class="primary-btn" onclick="showInstructions()">Play</button>
         </div>
       </section>
     </main>
 
-    <!-- FOOTER -->
-    <footer>স্মৃতি যাত্ৰা • স্মৃতি সহায়ক কাৰ্যকলাপ</footer>
+    <footer>
+      Count Next • স্মৃতি সহায়ক কাৰ্যকলাপ (Memory support activity)
+    </footer>
 
-    <!-- SQLITE -->
-    <script type="module" src="./offline-db.js"></script>
+    <!-- SQLITE HELPER -->
+
+    <script type="module" src="../../sqlite/offline-db.js"></script>
 
     <script>
-      /* =========================================
-         GAME VARIABLES
-         ========================================= */
+      /* =====================================================
+       GAME VARIABLES
+    ===================================================== */
 
       let nextNumber = 1;
+
       let mistakes = 0;
+
       let timeTaken = 0;
+
       let timerInterval = null;
+
       let gameRunning = false;
 
-      /* CURRENT LEVEL */
+      /* =====================================================
+       CURRENT LEVEL
+    ===================================================== */
+
       let currentLevel = 1;
 
-      /*
-        CURRENT DIFFICULTY
-        easy
-        medium
-        hard
-      */
       let difficulty = "easy";
 
-      /*
-        TOTAL NUMBERS
-        This is calculated based on
-        level + difficulty.
-      */
       let totalNumbers = 9;
 
-      /* =========================================
-         LEVEL CONFIGURATION
-         ========================================= */
+      /* =====================================================
+       ADAPTIVE STEPS
 
-      const levelConfiguration = {
-        1: {
-          easy: 9,
-          medium: 12,
-          hard: 25,
+       IMPORTANT ORDER:
+
+       9
+       12
+       15
+       20
+       24
+       28
+       30
+       36
+       42
+
+       One step = one game difficulty.
+       ===================================================== */
+
+      const adaptiveSteps = [
+        {
+          level: 1,
+          difficulty: "easy",
+          totalNumbers: 9,
         },
 
-        2: {
-          easy: 20,
-          medium: 24,
-          hard: 28,
+        {
+          level: 1,
+          difficulty: "medium",
+          totalNumbers: 12,
         },
 
-        3: {
-          easy: 30,
-          medium: 36,
-          hard: 42,
+        {
+          level: 1,
+          difficulty: "hard",
+          totalNumbers: 15,
         },
-      };
 
-      /* =========================================
-         GRID CONFIGURATION
+        {
+          level: 2,
+          difficulty: "easy",
+          totalNumbers: 20,
+        },
 
-         9  = 3 x 3
-         12 = 3 x 4
-         20 = 4 x 5
-         24 = 4 x 6
-         25 = 5 x 5
-         28 = 4 x 7
-         30 = 5 x 6
-         36 = 6 x 6
-         42 = 6 x 7
-         ========================================= */
+        {
+          level: 2,
+          difficulty: "medium",
+          totalNumbers: 24,
+        },
+
+        {
+          level: 2,
+          difficulty: "hard",
+          totalNumbers: 28,
+        },
+
+        {
+          level: 3,
+          difficulty: "easy",
+          totalNumbers: 30,
+        },
+
+        {
+          level: 3,
+          difficulty: "medium",
+          totalNumbers: 36,
+        },
+
+        {
+          level: 3,
+          difficulty: "hard",
+          totalNumbers: 42,
+        },
+      ];
+
+      /* =====================================================
+       GRID CONFIGURATION
+    ===================================================== */
 
       const gridConfiguration = {
         9: {
@@ -916,6 +866,11 @@
           columns: 4,
         },
 
+        15: {
+          rows: 3,
+          columns: 5,
+        },
+
         20: {
           rows: 4,
           columns: 5,
@@ -924,11 +879,6 @@
         24: {
           rows: 4,
           columns: 6,
-        },
-
-        25: {
-          rows: 5,
-          columns: 5,
         },
 
         28: {
@@ -952,79 +902,261 @@
         },
       };
 
-      /* =========================================
-         GET DIFFICULTY NAME
-         ========================================= */
+      /* =====================================================
+       PATIENT ID
+    ===================================================== */
+
+      function getCurrentPatientId() {
+        return "prototype-user-001";
+      }
+
+      /* =====================================================
+       DIFFICULTY NAME
+    ===================================================== */
 
       function getDifficultyName() {
         if (difficulty === "easy") {
-          return "সহজ";
+          return "সহজ (Easy)";
         }
 
         if (difficulty === "medium") {
-          return "মধ্যম";
+          return "মধ্যম (Medium)";
         }
 
-        return "কঠিন";
+        return "কঠিন (Hard)";
       }
 
-      /* =========================================
-         UPDATE TOTAL NUMBERS
-         ========================================= */
+      /* =====================================================
+       PERFORMANCE RULE
 
-      function updateTotalNumbers() {
-        totalNumbers = levelConfiguration[currentLevel][difficulty];
+       0–1 mistakes
+       → NEXT STEP
 
-        document.getElementById("instructionNumberCount").textContent =
-          totalNumbers + "টা সংখ্যা";
+       2–3 mistakes
+       → SAME STEP
 
-        document.getElementById("difficultyInfo").textContent =
-          "স্তৰ " +
-          currentLevel +
-          " • " +
-          getDifficultyName() +
-          " • " +
-          totalNumbers +
-          "টা সংখ্যা";
+       4–5 mistakes
+       → PREVIOUS STEP
+    ===================================================== */
+
+      function getNextAdaptiveStep(previousStep, previousMistakes) {
+        if (previousMistakes <= 1) {
+          return Math.min(previousStep + 1, adaptiveSteps.length - 1);
+        }
+
+        if (previousMistakes <= 3) {
+          return previousStep;
+        }
+
+        return Math.max(previousStep - 1, 0);
       }
 
-      /* =========================================
-         SELECT LEVEL
-         ========================================= */
+      /* =====================================================
+       GET TODAY DATE
 
-      function selectLevel(level) {
-        currentLevel = level;
+       Uses local browser date.
 
-        document.querySelectorAll(".level-btn").forEach((button) => {
-          button.classList.remove("selected");
+       Example:
+       2026-09-05
+    ===================================================== */
+
+      function getTodayDate() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+
+        const day = String(now.getDate()).padStart(2, "0");
+
+        return `${year}-${month}-${day}`;
+      }
+
+      /* =====================================================
+       CHECK WHETHER USER ALREADY PLAYED TODAY
+    ===================================================== */
+
+      function hasPlayedToday(history) {
+        const today = getTodayDate();
+
+        return history.some((session) => {
+          /*
+          SQLite result indexes:
+
+          0  id
+          1  sync_id
+          2  user_id
+          3  game_name
+          4  level
+          5  difficulty
+          6  total_numbers
+          7  score
+          8  mistakes
+          9  time_taken
+          10 reaction_times
+          11 reaction_time_std_dev
+          12 error_log
+          13 hesitation_events
+          14 completed
+          15 completed_at
+          16 synced
+        */
+
+          const completedAt = session[15];
+
+          if (!completedAt) {
+            return false;
+          }
+
+          /*
+          Convert stored ISO date to
+          local browser date.
+        */
+
+          const sessionDate = new Date(completedAt);
+
+          if (Number.isNaN(sessionDate.getTime())) {
+            return false;
+          }
+
+          const year = sessionDate.getFullYear();
+
+          const month = String(sessionDate.getMonth() + 1).padStart(2, "0");
+
+          const day = String(sessionDate.getDate()).padStart(2, "0");
+
+          const localDate = `${year}-${month}-${day}`;
+
+          return localDate === today;
         });
-
-        document
-          .getElementById("level" + level + "Btn")
-          .classList.add("selected");
-
-        updateTotalNumbers();
       }
 
-      /* =========================================
-         SELECT DIFFICULTY
-         ========================================= */
+      /* =====================================================
+       RESOLVE TODAY'S GAME
 
-      function selectDifficulty(level) {
-        difficulty = level;
+       IMPORTANT:
 
-        document.querySelectorAll(".difficulty-btn").forEach((button) => {
-          button.classList.remove("selected");
-        });
+       We DO NOT move immediately after finishing.
 
-        document.getElementById(level + "Btn").classList.add("selected");
+       The previous result is used only when
+       the user returns on a later day.
+    ===================================================== */
 
-        updateTotalNumbers();
+      async function resolveAdaptiveLevel(patientId) {
+        try {
+          const history = await window.getRecentSessions(
+            patientId,
+            "Count Next",
+            20,
+          );
+
+          /* -----------------------------------------------
+           IF USER ALREADY PLAYED TODAY
+        ------------------------------------------------ */
+
+          if (hasPlayedToday(history)) {
+            return {
+              alreadyPlayedToday: true,
+            };
+          }
+
+          /* -----------------------------------------------
+           FIRST EVER GAME
+
+           ALWAYS:
+
+           Level 1 Easy
+           9 numbers
+        ------------------------------------------------ */
+
+          if (!history || history.length === 0) {
+            return {
+              alreadyPlayedToday: false,
+
+              level: 1,
+
+              difficulty: "easy",
+
+              totalNumbers: 9,
+            };
+          }
+
+          /* -----------------------------------------------
+           MOST RECENT PREVIOUS GAME
+        ------------------------------------------------ */
+
+          const last = history[0];
+
+          const previousLevel = Number(last[4]) || 1;
+
+          const previousDifficulty = last[5] || "easy";
+
+          const previousMistakes = Number(last[8]) || 0;
+
+          /* -----------------------------------------------
+           FIND PREVIOUS STEP
+        ------------------------------------------------ */
+
+          let previousStep = adaptiveSteps.findIndex(
+            (step) =>
+              step.level === previousLevel &&
+              step.difficulty === previousDifficulty,
+          );
+
+          if (previousStep === -1) {
+            previousStep = 0;
+          }
+
+          /* -----------------------------------------------
+           CALCULATE NEXT STEP
+
+           0–1 → next
+           2–3 → same
+           4–5 → previous
+        ------------------------------------------------ */
+
+          const nextStep = getNextAdaptiveStep(previousStep, previousMistakes);
+
+          const resolved = adaptiveSteps[nextStep];
+
+          console.log("📊 Previous game:", {
+            level: previousLevel,
+            difficulty: previousDifficulty,
+            mistakes: previousMistakes,
+          });
+
+          console.log("🧠 Today's game:", resolved);
+
+          return {
+            alreadyPlayedToday: false,
+
+            ...resolved,
+          };
+        } catch (error) {
+          console.error("❌ Adaptive analysis failed:", error);
+
+          /*
+          Safe fallback.
+
+          A fresh/failed resolution MUST
+          NEVER start at a high level.
+        */
+
+          return {
+            alreadyPlayedToday: false,
+
+            level: 1,
+
+            difficulty: "easy",
+
+            totalNumbers: 9,
+          };
+        }
       }
 
-      /* =========================================
-         UPDATE GRID SIZE
-         ========================================= */
+      /* =====================================================
+       UPDATE GRID COLUMNS
+    ===================================================== */
 
       function updateGridColumns() {
         const grid = document.getElementById("numberGrid");
@@ -1032,18 +1164,17 @@
         const configuration = gridConfiguration[totalNumbers];
 
         if (!configuration) {
-          console.error("No grid configuration found for:", totalNumbers);
+          console.error("No grid configuration:", totalNumbers);
 
           return;
         }
 
-        grid.style.gridTemplateColumns =
-          "repeat(" + configuration.columns + ", 1fr)";
+        grid.style.gridTemplateColumns = `repeat(${configuration.columns}, 1fr)`;
       }
 
-      /* =========================================
-         SHOW SCREEN
-         ========================================= */
+      /* =====================================================
+       SHOW SCREEN
+    ===================================================== */
 
       function showScreen(screenId) {
         document.querySelectorAll(".screen").forEach((screen) => {
@@ -1053,9 +1184,9 @@
         document.getElementById(screenId).classList.add("active");
       }
 
-      /* =========================================
-         SHOW INSTRUCTIONS
-         ========================================= */
+      /* =====================================================
+       SHOW INSTRUCTIONS
+    ===================================================== */
 
       function showInstructions() {
         clearInterval(timerInterval);
@@ -1067,61 +1198,120 @@
         showScreen("instructionScreen");
       }
 
-      /* =========================================
-         START GAME
-         ========================================= */
+      /* =====================================================
+       START GAME
+    ===================================================== */
 
-      function startGame() {
-        /* Reset game */
+      async function startGame() {
+        const startButton = document.getElementById("startButton");
 
-        nextNumber = 1;
-        mistakes = 0;
-        timeTaken = 0;
-        gameRunning = true;
+        if (startButton) {
+          startButton.disabled = true;
 
-        updateTotalNumbers();
+          startButton.textContent = "Loading...";
+        }
 
-        /* Update statistics */
+        try {
+          const patientId = getCurrentPatientId();
 
-        updateStats();
+          /*
+          Resolve today's game.
 
-        /* Show game screen */
+          This checks:
+          1. Already played today?
+          2. First ever game?
+          3. Previous performance?
+        */
 
-        showScreen("gameScreen");
+          const resolved = await resolveAdaptiveLevel(patientId);
 
-        /* Set correct grid */
+          /* -----------------------------------------------
+           ALREADY PLAYED TODAY
+        ------------------------------------------------ */
 
-        updateGridColumns();
+          if (resolved.alreadyPlayedToday) {
+            showScreen("resultScreen");
 
-        /* Update game heading */
+            document.getElementById("resultIcon").textContent = "✓";
 
-        updateDifficultyText();
+            document.getElementById("resultTitle").textContent =
+              "আজিৰ খেল সম্পূৰ্ণ হৈছে (Today's game is complete)";
 
-        /* Create random numbers */
+            document.getElementById("resultMessage").textContent =
+              "আপুনি আজি ইতিমধ্যে খেলিছে। কাইলৈ আকৌ খেলিব পাৰিব। (You have already played today. You can play again tomorrow.)";
 
-        createGrid();
+            return;
+          }
 
-        /* Start stopwatch */
+          /* -----------------------------------------------
+           SET TODAY'S LEVEL
+        ------------------------------------------------ */
 
-        startTimer();
+          currentLevel = resolved.level;
+
+          difficulty = resolved.difficulty;
+
+          totalNumbers = resolved.totalNumbers;
+
+          console.log("🎮 Starting Count Next:", {
+            level: currentLevel,
+            difficulty: difficulty,
+            numbers: totalNumbers,
+          });
+
+          /* -----------------------------------------------
+           RESET GAME
+        ------------------------------------------------ */
+
+          nextNumber = 1;
+
+          mistakes = 0;
+
+          timeTaken = 0;
+
+          gameRunning = true;
+
+          /* -----------------------------------------------
+           UPDATE UI
+        ------------------------------------------------ */
+
+          updateStats();
+
+          updateDifficultyText();
+
+          document.getElementById("gameMessage").textContent =
+            "১ নম্বৰটো বিচাৰক (Find number 1)";
+
+          showScreen("gameScreen");
+
+          updateGridColumns();
+
+          createGrid();
+
+          startTimer();
+        } catch (error) {
+          console.error("❌ Could not start game:", error);
+        } finally {
+          if (startButton) {
+            startButton.disabled = false;
+
+            startButton.textContent = "Play";
+          }
+        }
       }
 
-      /* =========================================
-         UPDATE DIFFICULTY TEXT
-         ========================================= */
+      /* =====================================================
+       UPDATE DIFFICULTY TEXT
+    ===================================================== */
 
       function updateDifficultyText() {
         document.getElementById("difficultyText").textContent =
-          "স্তৰ " +
-          currentLevel +
-          " • " +
-          getDifficultyName() +
-          " • সংখ্যাবোৰ ক্ৰম অনুসৰি বিচাৰক";
+          `স্তৰ ${currentLevel} (Level ${currentLevel}) • ${getDifficultyName()} • সংখ্যাবোৰ ক্ৰম অনুসৰি বিচাৰক (Find the numbers in order)`;
       }
 
-      /* =========================================
-         CREATE RANDOM GRID
-         ========================================= */
+      /* =====================================================
+       CREATE RANDOM GRID
+    ===================================================== */
 
       function createGrid() {
         const grid = document.getElementById("numberGrid");
@@ -1130,15 +1320,13 @@
 
         updateGridColumns();
 
-        /* Create numbers */
-
-        let numbers = [];
+        const numbers = [];
 
         for (let i = 1; i <= totalNumbers; i++) {
           numbers.push(i);
         }
 
-        /* Fisher-Yates Shuffle */
+        /* Fisher-Yates shuffle */
 
         for (let i = numbers.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -1157,7 +1345,7 @@
 
           button.setAttribute("aria-label", "Number " + number);
 
-          button.addEventListener("click", function () {
+          button.addEventListener("click", () => {
             checkNumber(button, number);
           });
 
@@ -1165,18 +1353,18 @@
         });
       }
 
-      /* =========================================
-         CHECK NUMBER
-         ========================================= */
+      /* =====================================================
+       CHECK NUMBER
+    ===================================================== */
 
       function checkNumber(button, number) {
         if (!gameRunning) {
           return;
         }
 
-        /* =====================================
-           CORRECT
-           ===================================== */
+        /* -----------------------------------------------
+         CORRECT
+      ------------------------------------------------ */
 
         if (number === nextNumber) {
           button.classList.add("correct");
@@ -1196,12 +1384,12 @@
           }
 
           document.getElementById("gameMessage").textContent =
-            "ভাল! এতিয়া " + nextNumber + " নম্বৰটো বিচাৰক";
+            `ভাল! এতিয়া ${nextNumber} নম্বৰটো বিচাৰক (Good! Now find number ${nextNumber})`;
         } else {
-          /* =====================================
-             WRONG
-             ===================================== */
 
+        /* -----------------------------------------------
+         WRONG
+      ------------------------------------------------ */
           mistakes++;
 
           button.classList.add("wrong");
@@ -1212,7 +1400,9 @@
             button.classList.remove("wrong");
           }, 350);
 
-          /* Game ends exactly on 5th mistake */
+          /*
+          5 mistakes = game ends.
+        */
 
           if (mistakes >= 5) {
             finishGame(false, "mistakes");
@@ -1221,13 +1411,13 @@
           }
 
           document.getElementById("gameMessage").textContent =
-            "ঠিক আছে। " + nextNumber + " নম্বৰটো বিচাৰক";
+            `ঠিক আছে। ${nextNumber} নম্বৰটো বিচাৰক (Okay. Find number ${nextNumber})`;
         }
       }
 
-      /* =========================================
-         START STOPWATCH
-         ========================================= */
+      /* =====================================================
+       TIMER
+    ===================================================== */
 
       function startTimer() {
         clearInterval(timerInterval);
@@ -1243,9 +1433,9 @@
         }, 1000);
       }
 
-      /* =========================================
-         UPDATE STOPWATCH
-         ========================================= */
+      /* =====================================================
+       UPDATE TIMER
+    ===================================================== */
 
       function updateTimer() {
         const minutes = Math.floor(timeTaken / 60);
@@ -1260,58 +1450,82 @@
         document.getElementById("timer").textContent = formattedTime;
       }
 
-      /* =========================================
-         UPDATE STATS
-         ========================================= */
+      /* =====================================================
+       UPDATE STATS
+    ===================================================== */
 
       function updateStats() {
-        document.getElementById("mistakes").textContent = mistakes + " / 5";
+        document.getElementById("mistakes").textContent = `${mistakes} / 5`;
 
         document.getElementById("nextNumber").textContent = nextNumber;
 
         updateTimer();
       }
 
-      /* =========================================
-         FINISH GAME
-         ========================================= */
+      /* =====================================================
+       FINISH GAME
+    ===================================================== */
 
       async function finishGame(success, reason = "") {
-        /* Stop stopwatch immediately */
-
         clearInterval(timerInterval);
 
         gameRunning = false;
 
-        /* Final score */
+        /*
+        Score is calculated and stored.
 
-        const score = nextNumber - 1;
+        Score is NOT displayed.
 
-        /* SAVE TO SQLITE */
+        For example:
+
+        0 mistakes = 100
+        1 mistake  = 80
+        2 mistakes = 60
+        3 mistakes = 40
+        4 mistakes = 20
+        5 mistakes = 0
+
+        The adaptive decision itself uses
+        the mistake categories.
+      */
+
+        const score = Math.max(0, 100 - mistakes * 20);
+
+        /* -----------------------------------------------
+         SAVE TO SQLITE
+      ------------------------------------------------ */
 
         try {
-          if (typeof saveGameResult === "function") {
-            await saveGameResult({
-              gameName: "Memory Trail",
+          if (typeof window.saveGameResult === "function") {
+            await window.saveGameResult({
+              userId: getCurrentPatientId(),
+
+              gameName: "Count Next",
 
               level: currentLevel,
 
               difficulty: difficulty,
+
+              totalNumbers: totalNumbers,
 
               score: score,
 
               mistakes: mistakes,
 
               timeTaken: timeTaken,
+
+              completed: success,
             });
           } else {
-            console.error("SQLite helper is not loaded.");
+            console.error("❌ SQLite helper is not loaded.");
           }
         } catch (error) {
-          console.error("Could not save game result:", error);
+          console.error("❌ Could not save game result:", error);
         }
 
-        /* SHOW RESULT */
+        /* -----------------------------------------------
+         SHOW RESULT
+      ------------------------------------------------ */
 
         showScreen("resultScreen");
 
@@ -1326,49 +1540,52 @@
         if (success) {
           icon.textContent = "✓";
 
-          title.textContent = "বৰ সুন্দৰ কাম!";
+          title.textContent = "বৰ সুন্দৰ কাম! (Great job!)";
 
-          message.textContent =
-            "আপুনি সফলতাৰে " +
-            totalNumbers +
-            "টা সংখ্যা স্তৰ " +
-            currentLevel +
-            " (" +
-            getDifficultyName() +
-            ")ত বিচাৰি উলিয়ালে। আপুনি স্মৃতি যাত্ৰা সম্পূৰ্ণ কৰিলে।";
+          message.textContent = `আপুনি সফলতাৰে ${totalNumbers}টা সংখ্যা বিচাৰি উলিয়ালে। (You successfully found all ${totalNumbers} numbers.) কাইলৈ আপোনাৰ আজিৰ ফলাফলৰ ওপৰত ভিত্তি কৰি পৰৱৰ্তী স্তৰ নিৰ্ধাৰণ কৰা হ'ব। (Your next level will be decided tomorrow based on today's performance.)`;
         } else if (reason === "mistakes") {
-          /* 5 MISTAKES */
 
+        /* FIVE MISTAKES */
           icon.textContent = "•";
 
-          title.textContent = "ভাল চেষ্টা!";
+          title.textContent = "ভাল চেষ্টা! (Good effort!)";
 
-          message.textContent =
-            "৫টা ভুল হোৱাৰ পিছত খেলখন শেষ হৈছে। " +
-            "আপুনি স্তৰ " +
-            currentLevel +
-            "ত " +
-            score +
-            " নম্বৰলৈকে উপনীত হৈছে। অলপ জিৰণি লওক আৰু সাজু হ'লে আকৌ চেষ্টা কৰক।";
+          message.textContent = `৫টা ভুল হোৱাৰ পিছত খেলখন শেষ হৈছে। (The game ended after 5 mistakes.) কাইলৈ আপোনাৰ ফলাফল অনুসৰি স্তৰ নিৰ্ধাৰণ কৰা হ'ব। (Your level tomorrow will be decided based on your performance today.)`;
         }
       }
 
-      /* =========================================
-         INITIAL SETUP
-         ========================================= */
+      /* =====================================================
+       INITIAL DEFAULT
 
-      /*
-        Default:
+       IMPORTANT:
 
-        Level 1
-        Easy
-        9 numbers
-        3 x 3 grid
-      */
+       Fresh user ALWAYS starts:
 
-      selectLevel(1);
+       Level 1 Easy
+       9 numbers
+    ===================================================== */
 
-      selectDifficulty("easy");
+      currentLevel = 1;
+
+      difficulty = "easy";
+
+      totalNumbers = 9;
+
+      /* =====================================================
+       INITIALIZE SQLITE
+    ===================================================== */
+
+      window.addEventListener("load", async () => {
+        if (typeof window.initSQLite === "function") {
+          const ready = await window.initSQLite();
+
+          if (ready) {
+            console.log("✅ SQLite ready for Count Next");
+          }
+        } else {
+          console.error("❌ SQLite helper not available.");
+        }
+      });
     </script>
   </body>
 </html>

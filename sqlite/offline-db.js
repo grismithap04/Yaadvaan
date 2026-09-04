@@ -1,3 +1,9 @@
+/*
+  ==========================================
+  OFFLINE SQLITE DATABASE HELPER
+  ==========================================
+*/
+
 const sqliteWorker = new Worker(
   new URL("./sqlite-worker.js", import.meta.url),
   {
@@ -5,12 +11,20 @@ const sqliteWorker = new Worker(
   },
 );
 
+/*
+  ==========================================
+  PENDING REQUESTS
+  ==========================================
+*/
+
 const pendingRequests = new Map();
 
 let requestCounter = 0;
 
 /*
-  Worker response handler.
+  ==========================================
+  WORKER RESPONSE HANDLER
+  ==========================================
 */
 
 sqliteWorker.onmessage = (event) => {
@@ -28,7 +42,9 @@ sqliteWorker.onmessage = (event) => {
 };
 
 /*
-  Worker error handler.
+  ==========================================
+  WORKER ERROR
+  ==========================================
 */
 
 sqliteWorker.onerror = (error) => {
@@ -36,7 +52,9 @@ sqliteWorker.onerror = (error) => {
 };
 
 /*
-  Send request to SQLite worker.
+  ==========================================
+  SEND REQUEST
+  ==========================================
 */
 
 function sendRequest(action, data = {}) {
@@ -48,7 +66,9 @@ function sendRequest(action, data = {}) {
     try {
       sqliteWorker.postMessage({
         action,
+
         data,
+
         requestId,
       });
     } catch (error) {
@@ -60,7 +80,9 @@ function sendRequest(action, data = {}) {
 }
 
 /*
-  Initialize SQLite.
+  ==========================================
+  INITIALIZE SQLITE
+  ==========================================
 */
 
 async function initSQLite() {
@@ -82,10 +104,9 @@ async function initSQLite() {
 }
 
 /*
-  Save game result.
-
-  This function receives all the
-  metrics collected by Memory Trail.
+  ==========================================
+  SAVE GAME RESULT
+  ==========================================
 */
 
 async function saveGameResult({
@@ -121,13 +142,6 @@ async function saveGameResult({
     return false;
   }
 
-  /*
-    Create a unique ID.
-
-    The same sync_id is used by
-    SQLite and later cloud sync.
-  */
-
   const data = {
     sync_id: crypto.randomUUID(),
 
@@ -146,11 +160,6 @@ async function saveGameResult({
     mistakes: Number(mistakes),
 
     time_taken: Number(timeTaken),
-
-    /*
-      Arrays/objects are stored as JSON
-      strings inside SQLite.
-    */
 
     reaction_times: JSON.stringify(reactionTimes),
 
@@ -174,7 +183,7 @@ async function saveGameResult({
       return false;
     }
 
-    console.log("✅ Game result saved to SQLite:", data);
+    console.log("✅ Count Next result saved:", data);
 
     return true;
   } catch (error) {
@@ -185,7 +194,43 @@ async function saveGameResult({
 }
 
 /*
-  Get unsynchronized results.
+  ==========================================
+  GET RECENT SESSIONS
+  ==========================================
+*/
+
+async function getRecentSessions(
+  userId = "prototype-user-001",
+
+  gameName = "Count Next",
+
+  limit = 3,
+) {
+  try {
+    const result = await sendRequest("getRecentSessions", {
+      user_id: userId,
+
+      game_name: gameName,
+
+      limit: Number(limit),
+    });
+
+    if (!result.success) {
+      throw new Error(result.error);
+    }
+
+    return result.results || [];
+  } catch (error) {
+    console.error("❌ Could not get recent sessions:", error);
+
+    return [];
+  }
+}
+
+/*
+  ==========================================
+  GET UNSYNCED RESULTS
+  ==========================================
 */
 
 async function getUnsyncedResults() {
@@ -196,7 +241,7 @@ async function getUnsyncedResults() {
       throw new Error(result.error);
     }
 
-    return result.results;
+    return result.results || [];
   } catch (error) {
     console.error("❌ Could not get unsynced results:", error);
 
@@ -205,7 +250,9 @@ async function getUnsyncedResults() {
 }
 
 /*
-  Mark result as synchronized.
+  ==========================================
+  MARK RESULT AS SYNCED
+  ==========================================
 */
 
 async function markResultAsSynced(syncId) {
@@ -225,7 +272,9 @@ async function markResultAsSynced(syncId) {
 }
 
 /*
-  Get all game results.
+  ==========================================
+  GET ALL RESULTS
+  ==========================================
 */
 
 async function getAllGameResults() {
@@ -235,17 +284,20 @@ async function getAllGameResults() {
     throw new Error(result.error);
   }
 
-  return result.results;
+  return result.results || [];
 }
 
 /*
-  Make functions available
-  to the game.
+  ==========================================
+  MAKE FUNCTIONS AVAILABLE
+  ==========================================
 */
 
 window.initSQLite = initSQLite;
 
 window.saveGameResult = saveGameResult;
+
+window.getRecentSessions = getRecentSessions;
 
 window.getUnsyncedResults = getUnsyncedResults;
 
