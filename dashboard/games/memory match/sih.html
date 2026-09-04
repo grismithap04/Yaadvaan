@@ -1,755 +1,2269 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Northeast India Memory Match</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Work+Sans:wght@600;700&display=swap');
+  <head>
+    <meta charset="UTF-8" />
 
-  :root{
-    --forest:#2F5233;
-    --rust:#A8552E;
-    --indigo:#2B3A4A;
-    --cream:#F7F2E7;
-    --paper:#FFFDF8;
-    --line:#D2C8B4;
-  }
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  *{ box-sizing:border-box; }
+    <title>Yaadavan - Adaptive Memory Match</title>
 
-  body{
-    margin:0;
-    min-height:100vh;
-    background:var(--cream);
-    background-image:
-      radial-gradient(circle at 1px 1px, rgba(47,82,51,0.08) 1px, transparent 0);
-    background-size:22px 22px;
-    font-family:'Work Sans', sans-serif;
-    color:var(--indigo);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:12px;
-    position: relative;
-  }
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600&family=Work+Sans:wght@600;700&display=swap");
 
-  .card-container{
-    width:100%;
-    max-width:900px;
-    background:var(--paper);
-    border:3px solid var(--line);
-    border-radius:20px;
-    padding:20px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.08);
-  }
-
-  header{
-    text-align:center;
-    margin-bottom:12px;
-  }
-
-  .eyebrow{
-    font-size:14px;
-    color:var(--forest);
-    font-weight:700;
-    margin:0 0 2px;
-  }
-
-  h1{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-size:28px;
-    margin:0;
-    color:var(--indigo);
-  }
-
-  /* Difficulty & Sub-Level Controls */
-  .difficulty-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    margin: 14px 0 10px;
-  }
-
-  .tier-controls {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .tier-btn {
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 700;
-    font-size: 15px;
-    padding: 8px 20px;
-    border: 2px solid var(--line);
-    border-radius: 20px;
-    background: var(--paper);
-    color: var(--indigo);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .tier-btn:hover {
-    border-color: var(--forest);
-    background: var(--cream);
-  }
-
-  .tier-btn.active {
-    background: var(--forest);
-    color: var(--paper);
-    border-color: var(--forest);
-  }
-
-  .sub-controls {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .sub-btn {
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 6px 14px;
-    border: 2px solid var(--line);
-    border-radius: 16px;
-    background: #F4EFE3;
-    color: var(--indigo);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .sub-btn:hover {
-    border-color: var(--rust);
-    background: var(--cream);
-  }
-
-  .sub-btn.active {
-    background: var(--rust);
-    color: var(--paper);
-    border-color: var(--rust);
-  }
-
-  .instruction-box {
-    background: #EFE8D8;
-    border: 2px solid var(--forest);
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin: 12px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .instruction-text {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--indigo);
-    line-height: 1.3;
-    margin: 0;
-  }
-
-  .audio-btn {
-    background: var(--rust);
-    color: var(--paper);
-    border: none;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
-  }
-
-  /* Metrics Dashboard CSS */
-  .stats-dashboard {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    background: #F2EBDC;
-    border: 2px solid var(--line);
-    border-radius: 12px;
-    padding: 12px;
-    margin: 12px 0;
-  }
-
-  .stat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .stat-label {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: #6C6353;
-  }
-
-  .stat-value {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--indigo);
-    margin-top: 2px;
-  }
-
-  /* Dynamic CSS Grid */
-  .grid{
-    display: grid;
-    gap: 12px;
-    margin: 16px 0;
-    perspective: 1000px;
-    grid-template-columns: repeat(var(--cols, 4), 1fr);
-  }
-
-  .tile{
-    position:relative;
-    aspect-ratio:3/4;
-    cursor:pointer;
-  }
-
-  .tile.locked{ cursor:default; }
-
-  .tile-inner{
-    position:relative;
-    width:100%;
-    height:100%;
-    transition:transform 0.45s cubic-bezier(.4,.2,.2,1);
-    transform-style:preserve-3d;
-  }
-
-  .tile.flipped .tile-inner,
-  .tile.matched .tile-inner{
-    transform:rotateY(180deg);
-  }
-
-  .face{
-    position:absolute;
-    inset:0;
-    border-radius:12px;
-    backface-visibility:hidden;
-    border:3px solid var(--line);
-    overflow:hidden;
-  }
-
-  .face-back{
-    background:var(--forest);
-    background-image:
-      repeating-linear-gradient(45deg, rgba(247,242,231,0.08) 0 8px, transparent 8px 16px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .face-back .mark{
-    font-size:32px;
-    color:var(--cream);
-    opacity:0.85;
-  }
-
-  .face-front{
-    background:#2B3A4A;
-    transform:rotateY(180deg);
-    position:relative;
-    width:100%;
-    height:100%;
-  }
-
-  .face-front img {
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-  }
-
-  .tile.matched .face{
-    border-color:var(--rust);
-  }
-
-  footer{
-    display:flex;
-    justify-content:center;
-  }
-
-  .btn-primary{
-    font-family:'Work Sans', sans-serif;
-    font-size:15px;
-    font-weight:700;
-    color:var(--paper);
-    background:var(--forest);
-    border:none;
-    border-radius:10px;
-    padding:12px 24px;
-    cursor:pointer;
-  }
-
-  .btn-primary:hover{ background:#26402a; }
-
-  /* Encouragement Popup Overlay */
-  .encouragement-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.7);
-    background: var(--paper);
-    border: 3px solid var(--forest);
-    border-radius: 20px;
-    padding: 20px 32px;
-    text-align: center;
-    box-shadow: 0 12px 32px rgba(0,0,0,0.2);
-    z-index: 1000;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    pointer-events: none;
-  }
-
-  .encouragement-popup.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translate(-50%, -50%) scale(1);
-    pointer-events: auto;
-  }
-
-  .popup-image {
-    width: 90px;
-    height: 90px;
-    object-fit: contain;
-    display: inline-block;
-    animation: pulseBounce 0.8s ease infinite alternate;
-  }
-
-  .popup-text {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--forest);
-    margin: 8px 0 0;
-  }
-
-  @keyframes pulseBounce {
-    0% { transform: scale(1) translateY(0); }
-    100% { transform: scale(1.15) translateY(-8px); }
-  }
-
-  @media (max-width: 768px) {
-    .grid {
-      gap: 8px;
-      grid-template-columns: repeat(min(var(--cols, 4), 5), 1fr);
-    }
-  }
-
-  @media (max-width: 500px) {
-    .grid {
-      gap: 6px;
-      grid-template-columns: repeat(min(var(--cols, 4), 4), 1fr);
-    }
-    .stats-dashboard { grid-template-columns: repeat(3, 1fr); }
-  }
-</style>
-</head>
-<body>
-
-<div class="card-container">
-  <header>
-    <p class="eyebrow">Seven Sisters &amp; Sikkim (সাতভনী আৰু ছিকিম)</p>
-    <h1>Memory Match / স্মৃতিৰ খেল (অসমীয়া)</h1>
-  </header>
-
-  <!-- Difficulty Controls -->
-  <div class="difficulty-wrapper">
-    <div class="tier-controls" id="tierControls">
-      <button class="tier-btn active" data-tier="easy">Easy (সহজ)</button>
-      <button class="tier-btn" data-tier="medium">Medium (মধ্যম)</button>
-      <button class="tier-btn" data-tier="hard">Hard (কঠিন)</button>
-    </div>
-    <div class="sub-controls" id="subControls"></div>
-  </div>
-
-  <div class="instruction-box">
-    <p class="instruction-text" id="instructionText">স্বাগতম! ছবিৰ কাৰ্ডখনত টেপ কৰক।</p>
-    <button class="audio-btn" id="listenBtn" onclick="repeatInstruction()">🔊 শুনক (Listen)</button>
-  </div>
-
-  <!-- Essential Metrics Panel -->
-  <div class="stats-dashboard">
-    <div class="stat-card">
-      <span class="stat-label">Moves (খোজ)</span>
-      <span class="stat-value" id="moves">0</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Pairs (যোৰ)</span>
-      <span class="stat-value"><span id="pairsFound">0</span> / <span id="pairsTotal">3</span></span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-label">Time Elapsed (পাৰ হোৱা সময়)</span>
-      <span class="stat-value" id="timer">0s</span>
-    </div>
-  </div>
-
-  <div class="grid" id="grid"></div>
-
-  <footer>
-    <button class="btn-primary" id="newGameBtn">Start New Game (নতুন খেল আৰম্ভ কৰক)</button>
-  </footer>
-</div>
-
-<!-- Encouragement Popup Overlay -->
-<div id="encouragementPopup" class="encouragement-popup" onclick="hideEncouragement()">
-  <img class="popup-image" src="file:///C:/Users/jayas/Downloads/sih/emoji.png" alt="Encouragement" />
-  <p class="popup-text">আগবাঢ়ি যাওক! (Keep going!)</p>
-</div>
-
-<script>
-  // ==========================================
-  // BHASHINI CONFIGURATION
-  // ==========================================
-  const BHASHINI_USER_ID = ""; 
-  const BHASHINI_API_KEY = ""; 
-  const BHASHINI_SERVICE_ID = "ai4bharat/indic-tts--gpu-u3";
-
-  // 16 Items required to support up to 32 cards (16 pairs)
-  const ITEMS = [
-    { name: 'চাহ বাগান', img:'file:///C:/Users/jayas/Downloads/sih/tea-garden.jpg' },
-    { name: 'অসমীয়া সংস্কৃতি', img:'file:///C:/Users/jayas/Downloads/sih/img1.jpg' },
-    { name: 'বিহু নাচ', img:'file:///C:/Users/jayas/Downloads/sih/img2.jpg' },
-    { name: 'এশিঙীয়া গঁৰ', img:'file:///C:/Users/jayas/Downloads/sih/img3.jpg' },
-    { name: 'নামঘৰ', img:'file:///C:/Users/jayas/Downloads/sih/img4.jpg' },
-    { name: 'প্ৰাকৃতিক সৌন্দৰ্য', img:'file:///C:/Users/jayas/Downloads/sih/img5.jpeg' },
-    { name: 'জীৱন্ত শিপাৰ সাঁকো', img:'file:///C:/Users/jayas/Downloads/sih/root-bridge.jpg' },
-    { name: 'লোককলা', img:'file:///C:/Users/jayas/Downloads/sih/img6.jpg' },
-    { name: 'পৰম্পৰাগত সাজ-পাৰ', img:'file:///C:/Users/jayas/Downloads/sih/img7.jpg' },
-    { name: 'পাহাৰীয়া দৃশ্য', img:'file:///C:/Users/jayas/Downloads/sih/img8.jpg' },
-    { name: 'নদীৰ দৃশ্য', img:'file:///C:/Users/jayas/Downloads/sih/img9.jpg' },
-    { name: 'ঐতিহাসিক ঠাই', img:'file:///C:/Users/jayas/Downloads/sih/img10.png' },
-    { name: 'শৰাই', img:'file:///C:/Users/jayas/Downloads/sih/img11.jpg' },
-    { name: 'জাপি', img:'file:///C:/Users/jayas/Downloads/sih/img12.jpg' },
-    { name: 'কাৰেং ঘৰ', img:'file:///C:/Users/jayas/Downloads/sih/img13.jpg' },
-    { name: 'কামাখ্যা মন্দিৰ', img:'file:///C:/Users/jayas/Downloads/sih/img14.jpg' }
-  ];
-
-  // Sub-levels Configuration
-  const SUB_LEVELS = {
-    easy: [
-      { label: 'Level 1 (6 Cards / ৬খন কাৰ্ড)', pairs: 3, cols: 3 },
-      { label: 'Level 2 (8 Cards / ৮খন কাৰ্ড)', pairs: 4, cols: 4 },
-      { label: 'Level 3 (10 Cards / ১০খন কাৰ্ড)', pairs: 5, cols: 5 }
-    ],
-    medium: [
-      { label: 'Level 1 (12 Cards / ১২খন কাৰ্ড)', pairs: 6, cols: 4 },
-      { label: 'Level 2 (16 Cards / ১৬খন কাৰ্ড)', pairs: 8, cols: 4 },
-      { label: 'Level 3 (20 Cards / ২০খন কাৰ্ড)', pairs: 10, cols: 5 }
-    ],
-    hard: [
-      { label: 'Level 1 (24 Cards / ২৪খন কাৰ্ড)', pairs: 12, cols: 6 },
-      { label: 'Level 2 (28 Cards / ২৮খন কাৰ্ড)', pairs: 14, cols: 7 },
-      { label: 'Level 3 (32 Cards / ৩২খন কাৰ্ড)', pairs: 16, cols: 8 }
-    ]
-  };
-
-  const FLIPBACK_DELAY = 1400;
-  const IDLE_TIMEOUT_MS = 20000;
-
-  const grid = document.getElementById('grid');
-  const instructionText = document.getElementById('instructionText');
-  const movesEl = document.getElementById('moves');
-  const pairsFoundEl = document.getElementById('pairsFound');
-  const pairsTotalEl = document.getElementById('pairsTotal');
-  const timerEl = document.getElementById('timer');
-  const newGameBtn = document.getElementById('newGameBtn');
-  const tierControls = document.getElementById('tierControls');
-  const subControls = document.getElementById('subControls');
-  const encouragementPopup = document.getElementById('encouragementPopup');
-
-  let currentTier = 'easy';
-  let currentSubIndex = 0;
-  let currentPairs = 3;
-  let deck = [];
-  let flipped = [];
-  let matchedCount = 0;
-  let moves = 0;
-  let locked = false;
-  let currentPrompt = '';
-  let currentAudio = null;
-
-  // Timer & Idle Variables
-  let timerInterval = null;
-  let secondsElapsed = 0;
-  let timerStarted = false;
-  let idleTimer = null;
-  let popupHideTimer = null;
-
-  async function speak(textInAssamese) {
-    if (currentAudio) {
-      currentAudio.pause();
-      currentAudio = null;
-    }
-
-    if (BHASHINI_USER_ID && BHASHINI_API_KEY) {
-      try {
-        const response = await fetch("https://dhruva-api.bhashini.gov.in/services/inference/pipeline", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": BHASHINI_API_KEY,
-            "userID": BHASHINI_USER_ID
-          },
-          body: JSON.stringify({
-            "pipelineTasks": [
-              {
-                "taskType": "tts",
-                "config": {
-                  "language": { "sourceLanguage": "as" },
-                  "serviceId": BHASHINI_SERVICE_ID,
-                  "gender": "female"
-                }
-              }
-            ],
-            "inputData": { "input": [{ "source": textInAssamese }] }
-          })
-        });
-
-        const data = await response.json();
-        const base64Audio = data.pipelineResponse[0].audio[0].audioContent;
-        currentAudio = new Audio("data:audio/wav;base64," + base64Audio);
-        currentAudio.play();
-        return;
-      } catch (err) {
-        console.warn("Bhashini API call failed, switching to native Web Speech API:", err);
+      :root {
+        --forest: #2f5233;
+        --rust: #a8552e;
+        --indigo: #2b3a4a;
+        --cream: #f7f2e7;
+        --paper: #fffdf8;
+        --line: #d2c8b4;
       }
-    }
 
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(textInAssamese);
-      
-      const voices = window.speechSynthesis.getVoices();
-      const asVoice = voices.find(v => v.lang.includes('as'));
-      
-      if (asVoice) {
-        utterance.voice = asVoice;
-        utterance.lang = 'as-IN';
-      } else {
-        utterance.lang = 'hi-IN';
+      * {
+        box-sizing: border-box;
       }
-      
-      utterance.rate = 0.85;
-      window.speechSynthesis.speak(utterance);
-    }
-  }
 
-  function setInstruction(textInAssamese, speakAloud = true) {
-    currentPrompt = textInAssamese;
-    instructionText.textContent = textInAssamese;
-    if (speakAloud) speak(textInAssamese);
-  }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--cream);
 
-  function repeatInstruction() {
-    if (currentPrompt) speak(currentPrompt);
-  }
+        background-image: radial-gradient(
+          circle at 1px 1px,
+          rgba(47, 82, 51, 0.08) 1px,
+          transparent 0
+        );
 
-  // --- Inactivity Logic ---
-  function resetIdleTimer() {
-    if (idleTimer) clearTimeout(idleTimer);
-    hideEncouragement();
+        background-size: 22px 22px;
 
-    if (matchedCount < currentPairs) {
-      idleTimer = setTimeout(triggerInactivityPrompt, IDLE_TIMEOUT_MS);
-    }
-  }
+        font-family: "Work Sans", sans-serif;
+        color: var(--indigo);
 
-  function triggerInactivityPrompt() {
-    if (matchedCount === currentPairs) return;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-    encouragementPopup.classList.add('show');
-    const encouragementText = 'আগবাঢ়ি যাওক!'; 
-    speak(encouragementText);
+        padding: 12px;
+        position: relative;
+      }
 
-    if (popupHideTimer) clearTimeout(popupHideTimer);
-    popupHideTimer = setTimeout(() => {
-      hideEncouragement();
-    }, 3500);
+      .card-container {
+        width: 100%;
+        max-width: 900px;
 
-    idleTimer = setTimeout(triggerInactivityPrompt, IDLE_TIMEOUT_MS);
-  }
+        background: var(--paper);
+        border: 3px solid var(--line);
+        border-radius: 20px;
 
-  function hideEncouragement() {
-    encouragementPopup.classList.remove('show');
-  }
+        padding: 20px;
 
-  function shuffle(arr){
-    const a = arr.slice();
-    for(let i = a.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      }
 
-  function startTimer() {
-    if (!timerStarted) {
-      timerStarted = true;
-      timerInterval = setInterval(() => {
-        secondsElapsed++;
-        timerEl.textContent = `${secondsElapsed}s`;
-      }, 1000);
-    }
-  }
+      header {
+        text-align: center;
+        margin-bottom: 12px;
+      }
 
-  function stopTimer() {
-    clearInterval(timerInterval);
-    timerStarted = false;
-    if (idleTimer) clearTimeout(idleTimer);
-  }
+      .eyebrow {
+        font-size: 14px;
+        color: var(--forest);
+        font-weight: 700;
+        margin: 0 0 2px;
+      }
 
-  function resetMetrics() {
-    stopTimer();
-    secondsElapsed = 0;
-    timerStarted = false;
-    timerEl.textContent = '0s';
-  }
+      h1 {
+        font-family: "Fraunces", serif;
+        font-weight: 600;
+        font-size: 28px;
+        margin: 0;
+        color: var(--indigo);
+      }
 
-  function renderSubLevelButtons() {
-    subControls.innerHTML = '';
-    const levels = SUB_LEVELS[currentTier];
+      /* =========================================================
+         ADAPTIVE STATUS
+      ========================================================= */
 
-    levels.forEach((lvl, idx) => {
-      const btn = document.createElement('button');
-      btn.className = 'sub-btn' + (idx === currentSubIndex ? ' active' : '');
-      btn.textContent = lvl.label;
-      btn.addEventListener('click', () => {
-        currentSubIndex = idx;
-        renderSubLevelButtons();
-        buildDeck();
-      });
-      subControls.appendChild(btn);
-    });
-  }
+      .adaptive-status {
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-  function buildDeck(){
-    resetMetrics();
+        gap: 8px;
+        margin: 12px 0;
 
-    const lvlConfig = SUB_LEVELS[currentTier][currentSubIndex];
-    currentPairs = lvlConfig.pairs;
-    grid.style.setProperty('--cols', lvlConfig.cols);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--forest);
+      }
 
-    const chosen = shuffle(ITEMS).slice(0, currentPairs);
-    deck = shuffle([...chosen, ...chosen]).map(item => ({ ...item, state:'down' }));
-    flipped = [];
-    matchedCount = 0;
-    moves = 0;
-    locked = false;
-    pairsTotalEl.textContent = currentPairs;
-    
-    render();
-    updateStats();
-    setInstruction('স্বাগতম! ছবিৰ কাৰ্ডখনত টেপ কৰক।');
-    resetIdleTimer();
-  }
+      .adaptive-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--forest);
+      }
 
-  function render(){
-    grid.innerHTML = '';
-    deck.forEach((c, i) => {
-      const tile = document.createElement('div');
-      tile.className = 'tile' + (c.state === 'up' ? ' flipped' : '') + (c.state === 'matched' ? ' matched' : '') + (locked ? ' locked' : '');
-      tile.innerHTML = `
-        <div class="tile-inner">
-          <div class="face face-back"><span class="mark">✺</span></div>
-          <div class="face face-front">
-            <img src="${c.img}" alt="${c.name || 'Card image'}" referrerpolicy="no-referrer" />
-          </div>
-        </div>
-      `;
-      tile.addEventListener('click', () => flipTile(i));
-      grid.appendChild(tile);
-    });
-  }
+      /* =========================================================
+         INSTRUCTION BOX
+      ========================================================= */
 
-  function updateStats(){
-    movesEl.textContent = moves;
-    pairsFoundEl.textContent = matchedCount;
-  }
+      .instruction-box {
+        background: #efe8d8;
+        border: 2px solid var(--forest);
+        border-radius: 12px;
 
-  function flipTile(i){
-    if(locked) return;
-    const c = deck[i];
-    if(c.state !== 'down') return;
-    if(flipped.length === 2) return;
+        padding: 12px 16px;
+        margin: 12px 0;
 
-    resetIdleTimer();
-    startTimer();
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-    c.state = 'up';
-    flipped.push(i);
-    render();
+        gap: 12px;
+      }
 
-    if(flipped.length === 1){
-      setInstruction('আপুনি এখন কাৰ্ড খোলিলে। মিল থকা আনখন কাৰ্ড খোলক।');
-    }
+      .instruction-text {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--indigo);
+        line-height: 1.3;
+        margin: 0;
+      }
 
-    if(flipped.length === 2){
-      moves++;
-      const [a, b] = flipped;
+      .audio-btn {
+        background: var(--rust);
+        color: var(--paper);
 
-      if(deck[a].img === deck[b].img){
-        deck[a].state = 'matched';
-        deck[b].state = 'matched';
-        matchedCount++;
-        flipped = [];
-        render();
-        updateStats();
-        
-        if(matchedCount === currentPairs){
-          stopTimer();
-          setInstruction(`বহুত ধুনীয়া! আপুনি ${moves} টা চেষ্টাত সকলো মিল বিচাৰি পালে।`);
-        } else {
-          setInstruction(`সঠিক মিল! ${deck[a].name || ''}। আপুনি এটা যোৰ বিচাৰি পালে।`);
+        border: none;
+        border-radius: 8px;
+
+        padding: 10px 14px;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        cursor: pointer;
+
+        display: flex;
+        align-items: center;
+
+        gap: 4px;
+        flex-shrink: 0;
+      }
+
+      .audio-btn:hover {
+        opacity: 0.9;
+      }
+
+      /* =========================================================
+         PATIENT-FACING METRICS
+      ========================================================= */
+
+      .stats-dashboard {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 10px;
+
+        background: #f2ebdc;
+        border: 2px solid var(--line);
+        border-radius: 12px;
+
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      .stat-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        text-align: center;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        font-weight: 700;
+
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        color: #6c6353;
+      }
+
+      .stat-value {
+        font-size: 18px;
+        font-weight: 700;
+
+        color: var(--indigo);
+
+        margin-top: 2px;
+      }
+
+      /* =========================================================
+         GAME GRID
+      ========================================================= */
+
+      .grid {
+        display: grid;
+
+        gap: 12px;
+        margin: 16px 0;
+
+        perspective: 1000px;
+
+        grid-template-columns: repeat(var(--cols, 4), 1fr);
+      }
+
+      .tile {
+        position: relative;
+
+        aspect-ratio: 3/4;
+
+        cursor: pointer;
+        min-width: 0;
+      }
+
+      .tile.locked {
+        cursor: default;
+      }
+
+      .tile-inner {
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+
+        transition: transform 0.45s cubic-bezier(0.4, 0.2, 0.2, 1);
+
+        transform-style: preserve-3d;
+      }
+
+      .tile.flipped .tile-inner,
+      .tile.matched .tile-inner {
+        transform: rotateY(180deg);
+      }
+
+      .face {
+        position: absolute;
+        inset: 0;
+
+        border-radius: 12px;
+
+        backface-visibility: hidden;
+
+        border: 3px solid var(--line);
+
+        overflow: hidden;
+      }
+
+      .face-back {
+        background: var(--forest);
+
+        background-image: repeating-linear-gradient(
+          45deg,
+          rgba(247, 242, 231, 0.08) 0 8px,
+          transparent 8px 16px
+        );
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .face-back .mark {
+        font-size: 32px;
+        color: var(--cream);
+        opacity: 0.85;
+      }
+
+      .face-front {
+        background: #2b3a4a;
+
+        transform: rotateY(180deg);
+
+        position: relative;
+
+        width: 100%;
+        height: 100%;
+      }
+
+      .face-front img {
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+        display: block;
+      }
+
+      .tile.matched .face {
+        border-color: var(--rust);
+      }
+
+      /* =========================================================
+         FOOTER
+      ========================================================= */
+
+      footer {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+      }
+
+      .btn-primary {
+        font-family: "Work Sans", sans-serif;
+
+        font-size: 15px;
+        font-weight: 700;
+
+        color: var(--paper);
+        background: var(--forest);
+
+        border: none;
+        border-radius: 10px;
+
+        padding: 12px 24px;
+
+        cursor: pointer;
+      }
+
+      .btn-primary:hover {
+        background: #26402a;
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      /* =========================================================
+         SESSION RESULT
+      ========================================================= */
+
+      .session-message {
+        display: none;
+
+        text-align: center;
+
+        margin-top: 12px;
+        padding: 12px;
+
+        background: #efe8d8;
+        border-radius: 10px;
+
+        font-size: 14px;
+        font-weight: 700;
+
+        color: var(--forest);
+      }
+
+      .session-message.show {
+        display: block;
+      }
+
+      /* =========================================================
+         ENCOURAGEMENT POPUP
+      ========================================================= */
+
+      .encouragement-popup {
+        position: fixed;
+
+        top: 50%;
+        left: 50%;
+
+        transform: translate(-50%, -50%) scale(0.7);
+
+        background: var(--paper);
+
+        border: 3px solid var(--forest);
+        border-radius: 20px;
+
+        padding: 20px 32px;
+
+        text-align: center;
+
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+
+        z-index: 1000;
+
+        opacity: 0;
+        visibility: hidden;
+
+        transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+        pointer-events: none;
+      }
+
+      .encouragement-popup.show {
+        opacity: 1;
+        visibility: visible;
+
+        transform: translate(-50%, -50%) scale(1);
+
+        pointer-events: auto;
+      }
+
+      .popup-image {
+        width: 90px;
+        height: 90px;
+
+        object-fit: contain;
+
+        display: inline-block;
+
+        animation: pulseBounce 0.8s ease infinite alternate;
+      }
+
+      .popup-text {
+        font-size: 20px;
+        font-weight: 700;
+
+        color: var(--forest);
+
+        margin: 8px 0 0;
+      }
+
+      @keyframes pulseBounce {
+        0% {
+          transform: scale(1) translateY(0);
         }
-      } else {
-        locked = true;
-        updateStats();
-        setInstruction('মিল নাই। কাৰ্ড দুখন মনত ৰাখিবলৈ চেষ্টা কৰক।');
-        render();
-        setTimeout(() => {
-          deck[a].state = 'down';
-          deck[b].state = 'down';
-          flipped = [];
-          locked = false;
-          render();
-          setInstruction('পুনৰ চেষ্টা কৰিবলৈ কাৰ্ডত টেপ কৰক।');
-          resetIdleTimer();
-        }, FLIPBACK_DELAY);
+
+        100% {
+          transform: scale(1.15) translateY(-8px);
+        }
       }
-    }
-  }
 
-  // Handle Main Tier Selection
-  tierControls.querySelectorAll('.tier-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      tierControls.querySelectorAll('.tier-btn').forEach(b => b.classList.remove('active'));
-      e.target.classList.add('active');
-      currentTier = e.target.dataset.tier;
-      currentSubIndex = 0;
-      renderSubLevelButtons();
-      buildDeck();
-    });
-  });
+      /* =========================================================
+         MOBILE
+      ========================================================= */
 
-  newGameBtn.addEventListener('click', buildDeck);
+      @media (max-width: 768px) {
+        .grid {
+          gap: 8px;
 
-  // Initialize
-  renderSubLevelButtons();
-  buildDeck();
-</script>
+          grid-template-columns: repeat(min(var(--cols, 4), 5), 1fr);
+        }
+      }
 
-</body>
+      @media (max-width: 500px) {
+        .grid {
+          gap: 6px;
+
+          grid-template-columns: repeat(min(var(--cols, 4), 4), 1fr);
+        }
+
+        .stats-dashboard {
+          grid-template-columns: repeat(3, 1fr);
+        }
+
+        .instruction-box {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .audio-btn {
+          justify-content: center;
+        }
+
+        .card-container {
+          padding: 12px;
+        }
+
+        h1 {
+          font-size: 23px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="card-container">
+      <header>
+        <p class="eyebrow">Seven Sisters &amp; Sikkim (সাতভনী আৰু ছিকিম)</p>
+
+        <h1>Memory Match / স্মৃতিৰ খেল (অসমীয়া)</h1>
+      </header>
+
+      <!-- =====================================================
+           ADAPTIVE STATUS
+      ===================================================== -->
+
+      <div class="adaptive-status">
+        <span class="adaptive-dot"></span>
+
+        <span> আপোনাৰ বাবে খেলখন নিজে নিজে সামঞ্জস্য কৰা হৈছে। </span>
+      </div>
+
+      <!-- =====================================================
+           INSTRUCTIONS
+      ===================================================== -->
+
+      <div class="instruction-box">
+        <p class="instruction-text" id="instructionText">
+          স্বাগতম! ছবিৰ কাৰ্ডখনত টেপ কৰক।
+        </p>
+
+        <button class="audio-btn" id="listenBtn" onclick="repeatInstruction()">
+          🔊 শুনক (Listen)
+        </button>
+      </div>
+
+      <!-- =====================================================
+           PATIENT-FACING METRICS
+      ===================================================== -->
+
+      <div class="stats-dashboard">
+        <div class="stat-card">
+          <span class="stat-label"> Moves (খোজ) </span>
+
+          <span class="stat-value" id="moves"> 0 </span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label"> Pairs (যোৰ) </span>
+
+          <span class="stat-value">
+            <span id="pairsFound">0</span>
+            /
+            <span id="pairsTotal">4</span>
+          </span>
+        </div>
+
+        <div class="stat-card">
+          <span class="stat-label"> Time Elapsed </span>
+
+          <span class="stat-value" id="timer"> 0s </span>
+        </div>
+      </div>
+
+      <!-- =====================================================
+           GAME GRID
+      ===================================================== -->
+
+      <div class="grid" id="grid"></div>
+
+      <!-- =====================================================
+           SESSION RESULT
+      ===================================================== -->
+
+      <div class="session-message" id="sessionMessage"></div>
+
+      <footer>
+        <button class="btn-primary" id="newGameBtn">
+          Start Game (খেল আৰম্ভ কৰক)
+        </button>
+      </footer>
+    </div>
+
+    <!-- =========================================================
+         ENCOURAGEMENT POPUP
+    ========================================================= -->
+
+    <div
+      id="encouragementPopup"
+      class="encouragement-popup"
+      onclick="hideEncouragement()"
+    >
+      <img class="popup-image" src="emoji.png" alt="Encouragement" />
+
+      <p class="popup-text">আগবাঢ়ি যাওক!</p>
+    </div>
+
+    <script>
+      /* ========================================================
+         1. BHASHINI CONFIGURATION
+      ======================================================== */
+
+      const BHASHINI_USER_ID = "";
+
+      const BHASHINI_API_KEY = "";
+
+      const BHASHINI_SERVICE_ID = "ai4bharat/indic-tts--gpu-u3";
+
+      /* ========================================================
+         2. GEMINI CONFIGURATION
+      ======================================================== */
+
+      const GEMINI_API_KEY = "";
+
+      const GEMINI_MODEL = "gemini-2.5-flash";
+
+      /* ========================================================
+         3. OFFLINE SQLITE DATABASE
+         
+         IMPORTANT:
+         Count Next and Memory Match use the SAME database.
+
+         There is NO daily restriction in this page.
+
+         Count Next remains unchanged.
+         Memory Match can also be played multiple times.
+      ======================================================== */
+
+      let sqliteReady = false;
+
+      async function initializeSQLite() {
+        if (typeof window.initSQLite !== "function") {
+          console.warn("SQLite helper not loaded.");
+
+          return false;
+        }
+
+        try {
+          sqliteReady = await window.initSQLite();
+
+          return sqliteReady;
+        } catch (error) {
+          console.error("SQLite initialization error:", error);
+
+          return false;
+        }
+      }
+
+      /* ========================================================
+         4. PATIENT ID
+      ======================================================== */
+
+      const PATIENT_STORAGE_KEY = "yaadavan_patient_id";
+
+      function getPatientId() {
+        let patientId = localStorage.getItem(PATIENT_STORAGE_KEY);
+
+        if (!patientId) {
+          patientId =
+            "patient_" +
+            Date.now() +
+            "_" +
+            Math.random().toString(36).substring(2, 8);
+
+          localStorage.setItem(PATIENT_STORAGE_KEY, patientId);
+        }
+
+        return patientId;
+      }
+
+      const PATIENT_ID = getPatientId();
+
+      /* ========================================================
+         5. LEGACY HISTORY STORAGE
+      ======================================================== */
+
+      const HISTORY_STORAGE_KEY = "yaadavan_memory_match_history";
+
+      /* ========================================================
+         6. ADAPTIVE DIFFICULTY LADDER
+      ======================================================== */
+
+      const DIFFICULTY_LEVELS = [
+        {
+          id: "E1",
+          tier: "easy",
+          level: 1,
+          pairs: 3,
+          cols: 3,
+          cards: 6,
+        },
+
+        {
+          id: "E2",
+          tier: "easy",
+          level: 2,
+          pairs: 4,
+          cols: 4,
+          cards: 8,
+        },
+
+        {
+          id: "E3",
+          tier: "easy",
+          level: 3,
+          pairs: 5,
+          cols: 5,
+          cards: 10,
+        },
+
+        {
+          id: "M1",
+          tier: "medium",
+          level: 1,
+          pairs: 6,
+          cols: 4,
+          cards: 12,
+        },
+
+        {
+          id: "M2",
+          tier: "medium",
+          level: 2,
+          pairs: 8,
+          cols: 4,
+          cards: 16,
+        },
+
+        {
+          id: "M3",
+          tier: "medium",
+          level: 3,
+          pairs: 10,
+          cols: 5,
+          cards: 20,
+        },
+
+        {
+          id: "H1",
+          tier: "hard",
+          level: 1,
+          pairs: 12,
+          cols: 6,
+          cards: 24,
+        },
+
+        {
+          id: "H2",
+          tier: "hard",
+          level: 2,
+          pairs: 14,
+          cols: 7,
+          cards: 28,
+        },
+
+        {
+          id: "H3",
+          tier: "hard",
+          level: 3,
+          pairs: 16,
+          cols: 8,
+          cards: 32,
+        },
+      ];
+
+      /* ========================================================
+         7. SCORE THRESHOLDS
+      ======================================================== */
+
+      const SCORE_THRESHOLDS = {
+        down: 60,
+        up: 70,
+      };
+
+      /* ========================================================
+         8. GAME ITEMS
+      ======================================================== */
+
+      const ITEMS = [
+        {
+          name: "চাহ বাগান",
+          img: "tea-garden.jpg",
+        },
+
+        {
+          name: "অসমীয়া সংস্কৃতি",
+          img: "img1.jpg",
+        },
+
+        {
+          name: "বিহু নাচ",
+          img: "img2.jpg",
+        },
+
+        {
+          name: "এশিঙীয়া গঁৰ",
+          img: "img3.jpg",
+        },
+
+        {
+          name: "নামঘৰ",
+          img: "img4.jpg",
+        },
+
+        {
+          name: "প্ৰাকৃতিক সৌন্দৰ্য",
+          img: "img5.jpeg",
+        },
+
+        {
+          name: "জীৱন্ত শিপাৰ সাঁকো",
+          img: "root-bridge.jpg",
+        },
+
+        {
+          name: "লোককলা",
+          img: "img6.jpg",
+        },
+
+        {
+          name: "পৰম্পৰাগত সাজ-পাৰ",
+          img: "img7.jpg",
+        },
+
+        {
+          name: "পাহাৰীয়া দৃশ্য",
+          img: "img8.jpg",
+        },
+
+        {
+          name: "নদীৰ দৃশ্য",
+          img: "img9.jpg",
+        },
+
+        {
+          name: "ঐতিহাসিক ঠাই",
+          img: "img10.png",
+        },
+
+        {
+          name: "শৰাই",
+          img: "img11.jpg",
+        },
+
+        {
+          name: "জাপি",
+          img: "img12.jpg",
+        },
+
+        {
+          name: "কাৰেং ঘৰ",
+          img: "img13.jpg",
+        },
+
+        {
+          name: "কামাখ্যা মন্দিৰ",
+          img: "img14.jpg",
+        },
+      ];
+
+      /* ========================================================
+         9. GAME TIMING
+      ======================================================== */
+
+      const FLIPBACK_DELAY = 1400;
+
+      const IDLE_TIMEOUT_MS = 20000;
+
+      /* ========================================================
+         10. DOM REFERENCES
+      ======================================================== */
+
+      const grid = document.getElementById("grid");
+
+      const instructionText = document.getElementById("instructionText");
+
+      const movesEl = document.getElementById("moves");
+
+      const pairsFoundEl = document.getElementById("pairsFound");
+
+      const pairsTotalEl = document.getElementById("pairsTotal");
+
+      const timerEl = document.getElementById("timer");
+
+      const newGameBtn = document.getElementById("newGameBtn");
+
+      const encouragementPopup = document.getElementById("encouragementPopup");
+
+      const sessionMessage = document.getElementById("sessionMessage");
+
+      /* ========================================================
+         11. GAME STATE
+      ======================================================== */
+
+      let currentDifficultyIndex = 1;
+
+      let currentDifficulty = DIFFICULTY_LEVELS[currentDifficultyIndex];
+
+      let deck = [];
+
+      let flipped = [];
+
+      let matchedCount = 0;
+
+      let moves = 0;
+
+      let locked = false;
+
+      /* ========================================================
+         12. SESSION METRICS
+      ======================================================== */
+
+      let sessionStartedAt = null;
+
+      let sessionCompletedAt = null;
+
+      let sessionCompleted = false;
+
+      let mistakes = 0;
+
+      let successfulMatches = 0;
+
+      let firstAttemptCorrect = 0;
+
+      let repeatedCardErrors = 0;
+
+      let idleEvents = 0;
+
+      let totalCardSelections = 0;
+
+      let cardSelectionTimes = [];
+
+      let lastSelectionTime = null;
+
+      /* ========================================================
+         13. TIMER STATE
+      ======================================================== */
+
+      let timerInterval = null;
+
+      let secondsElapsed = 0;
+
+      let timerStarted = false;
+
+      let idleTimer = null;
+
+      let popupHideTimer = null;
+
+      /* ========================================================
+         14. AUDIO STATE
+      ======================================================== */
+
+      let currentPrompt = "";
+
+      let currentAudio = null;
+
+      /* ========================================================
+         15. SHUFFLE
+      ======================================================== */
+
+      function shuffle(arr) {
+        const a = arr.slice();
+
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+
+        return a;
+      }
+
+      /* ========================================================
+         16. BHASHINI / TTS
+      ======================================================== */
+
+      async function speak(textInAssamese) {
+        if (currentAudio) {
+          currentAudio.pause();
+
+          currentAudio = null;
+        }
+
+        if (BHASHINI_USER_ID && BHASHINI_API_KEY) {
+          try {
+            const response = await fetch(
+              "https://dhruva-api.bhashini.gov.in/services/inference/pipeline",
+              {
+                method: "POST",
+
+                headers: {
+                  "Content-Type": "application/json",
+
+                  Authorization: BHASHINI_API_KEY,
+
+                  userID: BHASHINI_USER_ID,
+                },
+
+                body: JSON.stringify({
+                  pipelineTasks: [
+                    {
+                      taskType: "tts",
+
+                      config: {
+                        language: {
+                          sourceLanguage: "as",
+                        },
+
+                        serviceId: BHASHINI_SERVICE_ID,
+
+                        gender: "female",
+                      },
+                    },
+                  ],
+
+                  inputData: {
+                    input: [
+                      {
+                        source: textInAssamese,
+                      },
+                    ],
+                  },
+                }),
+              },
+            );
+
+            const data = await response.json();
+
+            const base64Audio = data.pipelineResponse[0].audio[0].audioContent;
+
+            currentAudio = new Audio("data:audio/wav;base64," + base64Audio);
+
+            currentAudio.play();
+
+            return;
+          } catch (error) {
+            console.warn("Bhashini failed. Using native speech.", error);
+          }
+        }
+
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+
+          const utterance = new SpeechSynthesisUtterance(textInAssamese);
+
+          const voices = window.speechSynthesis.getVoices();
+
+          const asVoice = voices.find((voice) => voice.lang.includes("as"));
+
+          if (asVoice) {
+            utterance.voice = asVoice;
+
+            utterance.lang = "as-IN";
+          } else {
+            utterance.lang = "hi-IN";
+          }
+
+          utterance.rate = 0.85;
+
+          window.speechSynthesis.speak(utterance);
+        }
+      }
+
+      /* ========================================================
+         17. INSTRUCTIONS
+      ======================================================== */
+
+      function setInstruction(textInAssamese, speakAloud = true) {
+        currentPrompt = textInAssamese;
+
+        instructionText.textContent = textInAssamese;
+
+        if (speakAloud) {
+          speak(textInAssamese);
+        }
+      }
+
+      function repeatInstruction() {
+        if (currentPrompt) {
+          speak(currentPrompt);
+        }
+      }
+
+      /* ========================================================
+         18. LOAD LEGACY HISTORY
+      ======================================================== */
+
+      function loadHistory() {
+        try {
+          const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+
+          if (!raw) {
+            return [];
+          }
+
+          const history = JSON.parse(raw);
+
+          if (!Array.isArray(history)) {
+            return [];
+          }
+
+          return history.filter((session) => session.patientId === PATIENT_ID);
+        } catch (error) {
+          console.warn("History loading failed:", error);
+
+          return [];
+        }
+      }
+
+      /* ========================================================
+         19. SAVE LEGACY SESSION
+      ======================================================== */
+
+      function saveSession(session) {
+        try {
+          const allHistory = JSON.parse(
+            localStorage.getItem(HISTORY_STORAGE_KEY) || "[]",
+          );
+
+          allHistory.push(session);
+
+          localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(allHistory));
+        } catch (error) {
+          console.error("Could not save session:", error);
+        }
+      }
+
+      /* ========================================================
+         20. GET RECENT MEMORY HISTORY
+      ======================================================== */
+
+      function getRecentMemoryHistory() {
+        return loadHistory()
+          .filter((session) => session.gameId === "memory_match")
+          .slice(-10);
+      }
+
+      /* ========================================================
+         21. SPEED SCORE
+      ======================================================== */
+
+      function calculateSpeedScore(metrics) {
+        const idealMoves = metrics.pairs;
+
+        const moveRatio = metrics.moves / Math.max(1, idealMoves);
+
+        let moveEfficiency;
+
+        if (moveRatio <= 1.25) {
+          moveEfficiency = 100;
+        } else if (moveRatio <= 1.5) {
+          moveEfficiency = 95;
+        } else if (moveRatio <= 2) {
+          moveEfficiency = 85;
+        } else if (moveRatio <= 2.5) {
+          moveEfficiency = 70;
+        } else if (moveRatio <= 3) {
+          moveEfficiency = 55;
+        } else if (moveRatio <= 4) {
+          moveEfficiency = 40;
+        } else {
+          moveEfficiency = 25;
+        }
+
+        const expectedSeconds = Math.max(30, metrics.pairs * 8);
+
+        const durationRatio = metrics.durationSeconds / expectedSeconds;
+
+        let durationScore;
+
+        if (durationRatio <= 1) {
+          durationScore = 100;
+        } else if (durationRatio <= 1.5) {
+          durationScore = 90;
+        } else if (durationRatio <= 2) {
+          durationScore = 75;
+        } else if (durationRatio <= 3) {
+          durationScore = 55;
+        } else {
+          durationScore = 35;
+        }
+
+        return Math.round(moveEfficiency * 0.7 + durationScore * 0.3);
+      }
+
+      /* ========================================================
+         22. ERROR CONTROL SCORE
+      ======================================================== */
+
+      function calculateErrorControlScore(metrics) {
+        if (metrics.moves <= 0) {
+          return 0;
+        }
+
+        const errorRate = metrics.mistakes / metrics.moves;
+
+        const repeatedErrorRate =
+          metrics.repeatedCardErrors / Math.max(1, metrics.moves);
+
+        const basicErrorScore = Math.max(0, 100 - errorRate * 100);
+
+        const repeatedErrorPenalty = repeatedErrorRate * 100;
+
+        return Math.round(
+          Math.max(0, basicErrorScore - repeatedErrorPenalty * 0.5),
+        );
+      }
+
+      /* ========================================================
+         23. CONSISTENCY SCORE
+      ======================================================== */
+
+      function calculateConsistencyScore(metrics) {
+        let score = 100;
+
+        score -= metrics.idleEvents * 5;
+
+        score -= metrics.repeatedCardErrors * 3;
+
+        if (metrics.selectionIntervalStdDev > 5000) {
+          score -= 10;
+        }
+
+        return Math.round(Math.max(0, Math.min(100, score)));
+      }
+
+      /* ========================================================
+         24. FINAL PERFORMANCE SCORE
+      ======================================================== */
+
+      function calculatePerformanceScore(metrics) {
+        const accuracyScore = Math.max(
+          0,
+          Math.min(100, metrics.accuracy * 100),
+        );
+
+        const completionScore = metrics.completed
+          ? 100
+          : metrics.completionRate * 100;
+
+        const speedScore = calculateSpeedScore(metrics);
+
+        const errorControlScore = calculateErrorControlScore(metrics);
+
+        const consistencyScore = calculateConsistencyScore(metrics);
+
+        const finalScore =
+          accuracyScore * 0.5 +
+          completionScore * 0.2 +
+          speedScore * 0.15 +
+          errorControlScore * 0.1 +
+          consistencyScore * 0.05;
+
+        return {
+          total: Math.round(Math.max(0, Math.min(100, finalScore))),
+
+          components: {
+            accuracy: Math.round(accuracyScore),
+
+            completion: Math.round(completionScore),
+
+            speed: Math.round(speedScore),
+
+            errorControl: Math.round(errorControlScore),
+
+            consistency: Math.round(consistencyScore),
+          },
+        };
+      }
+
+      /* ========================================================
+         25. SESSION METRICS
+      ======================================================== */
+
+      function calculateSessionMetrics() {
+        const pairs = currentDifficulty.pairs;
+
+        const accuracy = moves > 0 ? successfulMatches / moves : 0;
+
+        const completionRate = matchedCount / Math.max(1, pairs);
+
+        const averageTimePerMove = moves > 0 ? secondsElapsed / moves : 0;
+
+        let averageSelectionInterval = 0;
+
+        let selectionIntervalStdDev = 0;
+
+        if (cardSelectionTimes.length > 0) {
+          averageSelectionInterval =
+            cardSelectionTimes.reduce((sum, value) => sum + value, 0) /
+            cardSelectionTimes.length;
+
+          const variance =
+            cardSelectionTimes.reduce(
+              (sum, value) =>
+                sum + Math.pow(value - averageSelectionInterval, 2),
+              0,
+            ) / cardSelectionTimes.length;
+
+          selectionIntervalStdDev = Math.sqrt(variance);
+        }
+
+        const movesRatio = moves / Math.max(1, pairs);
+
+        return {
+          pairs,
+
+          moves,
+
+          matchedPairs: matchedCount,
+
+          accuracy: Number(accuracy.toFixed(3)),
+
+          completionRate: Number(completionRate.toFixed(3)),
+
+          completed: sessionCompleted,
+
+          durationSeconds: secondsElapsed,
+
+          averageTimePerMove: Number(averageTimePerMove.toFixed(2)),
+
+          averageSelectionIntervalMs: Number(
+            averageSelectionInterval.toFixed(2),
+          ),
+
+          selectionIntervalStdDev: Number(selectionIntervalStdDev.toFixed(2)),
+
+          mistakes,
+
+          successfulMatches,
+
+          firstAttemptCorrect,
+
+          firstAttemptAccuracy:
+            pairs > 0 ? Number((firstAttemptCorrect / pairs).toFixed(3)) : 0,
+
+          repeatedCardErrors,
+
+          idleEvents,
+
+          totalCardSelections,
+
+          movesRatio: Number(movesRatio.toFixed(2)),
+
+          abandonment: !sessionCompleted,
+        };
+      }
+
+      /* ========================================================
+         26. LOCAL ADAPTIVE ENGINE
+      ======================================================== */
+
+      function localDifficultyDecision(currentIndex, score) {
+        if (score < 60) {
+          return {
+            nextIndex: Math.max(0, currentIndex - 1),
+
+            reason: "Score below 60: decrease difficulty.",
+
+            source: "local_fallback",
+          };
+        }
+
+        if (score < 70) {
+          return {
+            nextIndex: currentIndex,
+
+            reason: "Score between 60 and 69: maintain difficulty.",
+
+            source: "local_fallback",
+          };
+        }
+
+        return {
+          nextIndex: Math.min(DIFFICULTY_LEVELS.length - 1, currentIndex + 1),
+
+          reason: "Score 70 or above: increase difficulty.",
+
+          source: "local_fallback",
+        };
+      }
+
+      /* ========================================================
+         27. GEMINI ADAPTIVE ENGINE
+      ======================================================== */
+
+      async function askGeminiForNextDifficulty(sessionResult) {
+        if (!GEMINI_API_KEY) {
+          console.warn(
+            "Gemini API key not configured. Using local adaptive engine.",
+          );
+
+          return localDifficultyDecision(
+            currentDifficultyIndex,
+            sessionResult.performanceScore,
+          );
+        }
+
+        const recentHistory = getRecentMemoryHistory();
+
+        const currentLevel = DIFFICULTY_LEVELS[currentDifficultyIndex];
+
+        const prompt = `
+
+You are the adaptive difficulty controller
+for Yaadavan, an elderly cognitive memory game.
+
+Your ONLY job is to select the NEXT difficulty.
+
+This is NOT a medical diagnosis.
+
+Difficulty ladder:
+
+E1 → E2 → E3 → M1 → M2 → M3 → H1 → H2 → H3
+
+Rules:
+
+1. Score below 60:
+   move exactly ONE step DOWN.
+
+2. Score from 60 to 69:
+   STAY at the same difficulty.
+
+3. Score 70 or above:
+   move exactly ONE step UP.
+
+4. Never skip a difficulty.
+
+5. Never move outside E1 to H3.
+
+6. Recent history may be considered for consistency.
+
+7. Current score determines the immediate transition.
+
+8. Do NOT diagnose dementia, MCI, depression,
+   disease progression, or any medical condition.
+
+9. Return ONLY JSON.
+
+Current difficulty:
+${currentLevel.id}
+
+Current difficulty index:
+${currentDifficultyIndex}
+
+Current score:
+${sessionResult.performanceScore}
+
+Score components:
+${JSON.stringify(sessionResult.scoreComponents)}
+
+Current metrics:
+${JSON.stringify(sessionResult.metrics)}
+
+Recent history:
+${JSON.stringify(recentHistory)}
+
+Valid difficulty IDs:
+
+${DIFFICULTY_LEVELS.map((level) => level.id).join(", ")}
+
+Return exactly:
+
+{
+  "nextDifficulty": "E1|E2|E3|M1|M2|M3|H1|H2|H3",
+  "reason": "short explanation"
+}
+
+`;
+
+        try {
+          const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type": "application/json",
+              },
+
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      {
+                        text: prompt,
+                      },
+                    ],
+                  },
+                ],
+
+                generationConfig: {
+                  temperature: 0,
+
+                  responseMimeType: "application/json",
+                },
+              }),
+            },
+          );
+
+          if (!response.ok) {
+            throw new Error(`Gemini HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+          if (!text) {
+            throw new Error("Gemini returned no decision.");
+          }
+
+          const decision = JSON.parse(text);
+
+          const nextIndex = DIFFICULTY_LEVELS.findIndex(
+            (level) => level.id === decision.nextDifficulty,
+          );
+
+          if (nextIndex === -1) {
+            throw new Error("Gemini returned invalid difficulty.");
+          }
+
+          if (Math.abs(nextIndex - currentDifficultyIndex) > 1) {
+            throw new Error("Gemini attempted to skip a difficulty.");
+          }
+
+          const expected = localDifficultyDecision(
+            currentDifficultyIndex,
+            sessionResult.performanceScore,
+          );
+
+          if (nextIndex !== expected.nextIndex) {
+            console.warn(
+              "Gemini decision conflicted with configured adaptive rules.",
+            );
+
+            return {
+              nextIndex: expected.nextIndex,
+
+              reason: "Gemini response conflicted with configured score rule.",
+
+              source: "rule_validation_fallback",
+            };
+          }
+
+          return {
+            nextIndex,
+
+            reason: decision.reason || "Gemini adaptive decision.",
+
+            source: "gemini",
+          };
+        } catch (error) {
+          console.error("Gemini adaptive decision failed:", error);
+
+          return localDifficultyDecision(
+            currentDifficultyIndex,
+            sessionResult.performanceScore,
+          );
+        }
+      }
+
+      /* ========================================================
+         28. INACTIVITY
+      ======================================================== */
+
+      function resetIdleTimer() {
+        if (idleTimer) {
+          clearTimeout(idleTimer);
+        }
+
+        hideEncouragement();
+
+        if (matchedCount < currentDifficulty.pairs) {
+          idleTimer = setTimeout(triggerInactivityPrompt, IDLE_TIMEOUT_MS);
+        }
+      }
+
+      function triggerInactivityPrompt() {
+        if (matchedCount === currentDifficulty.pairs) {
+          return;
+        }
+
+        idleEvents++;
+
+        encouragementPopup.classList.add("show");
+
+        const encouragementText = "আগবাঢ়ি যাওক!";
+
+        speak(encouragementText);
+
+        if (popupHideTimer) {
+          clearTimeout(popupHideTimer);
+        }
+
+        popupHideTimer = setTimeout(() => {
+          hideEncouragement();
+        }, 3500);
+
+        idleTimer = setTimeout(triggerInactivityPrompt, IDLE_TIMEOUT_MS);
+      }
+
+      function hideEncouragement() {
+        encouragementPopup.classList.remove("show");
+      }
+
+      /* ========================================================
+         29. TIMER
+      ======================================================== */
+
+      function startTimer() {
+        if (timerStarted) {
+          return;
+        }
+
+        timerStarted = true;
+
+        if (!sessionStartedAt) {
+          sessionStartedAt = new Date().toISOString();
+        }
+
+        timerInterval = setInterval(() => {
+          secondsElapsed++;
+
+          timerEl.textContent = `${secondsElapsed}s`;
+        }, 1000);
+      }
+
+      function stopTimer() {
+        if (timerInterval) {
+          clearInterval(timerInterval);
+
+          timerInterval = null;
+        }
+
+        timerStarted = false;
+
+        if (idleTimer) {
+          clearTimeout(idleTimer);
+
+          idleTimer = null;
+        }
+      }
+
+      /* ========================================================
+         30. RESET SESSION
+      ======================================================== */
+
+      function resetMetrics() {
+        stopTimer();
+
+        secondsElapsed = 0;
+
+        timerEl.textContent = "0s";
+
+        moves = 0;
+
+        matchedCount = 0;
+
+        mistakes = 0;
+
+        successfulMatches = 0;
+
+        firstAttemptCorrect = 0;
+
+        repeatedCardErrors = 0;
+
+        idleEvents = 0;
+
+        totalCardSelections = 0;
+
+        cardSelectionTimes = [];
+
+        lastSelectionTime = null;
+
+        sessionStartedAt = null;
+
+        sessionCompletedAt = null;
+
+        sessionCompleted = false;
+
+        flipped = [];
+
+        locked = false;
+
+        sessionMessage.classList.remove("show");
+
+        updateStats();
+      }
+
+      /* ========================================================
+         31. BUILD DECK
+      ======================================================== */
+
+      function buildDeck() {
+        resetMetrics();
+
+        const pairs = currentDifficulty.pairs;
+
+        const cols = currentDifficulty.cols;
+
+        grid.style.setProperty("--cols", cols);
+
+        const chosen = shuffle(ITEMS).slice(0, pairs);
+
+        deck = shuffle([...chosen, ...chosen]).map((item, index) => ({
+          ...item,
+
+          cardId: `${item.name}_${index}`,
+
+          state: "down",
+
+          pairKey: item.name,
+
+          hasBeenFlipped: false,
+
+          previousErrors: 0,
+
+          hasPreviouslyFailed: false,
+        }));
+
+        flipped = [];
+
+        locked = false;
+
+        pairsTotalEl.textContent = pairs;
+
+        render();
+
+        updateStats();
+
+        setInstruction("স্বাগতম! ছবিৰ কাৰ্ডখনত টেপ কৰক।");
+
+        resetIdleTimer();
+
+        newGameBtn.textContent = "Restart Game (পুনৰ আৰম্ভ কৰক)";
+      }
+
+      /* ========================================================
+         32. RENDER
+      ======================================================== */
+
+      function render() {
+        grid.innerHTML = "";
+
+        deck.forEach((card, index) => {
+          const tile = document.createElement("div");
+
+          tile.className =
+            "tile" +
+            (card.state === "up" ? " flipped" : "") +
+            (card.state === "matched" ? " matched" : "") +
+            (locked ? " locked" : "");
+
+          tile.innerHTML = `
+
+              <div class="tile-inner">
+
+                <div class="face face-back">
+
+                  <span class="mark">
+                    ✺
+                  </span>
+
+                </div>
+
+                <div class="face face-front">
+
+                  <img
+                    src="${card.img}"
+                    alt="${card.name || "Card image"}"
+                  >
+
+                </div>
+
+              </div>
+
+            `;
+
+          tile.addEventListener("click", () => flipTile(index));
+
+          grid.appendChild(tile);
+        });
+      }
+
+      /* ========================================================
+         33. UPDATE STATS
+      ======================================================== */
+
+      function updateStats() {
+        movesEl.textContent = moves;
+
+        pairsFoundEl.textContent = matchedCount;
+      }
+
+      /* ========================================================
+         34. FLIP TILE
+      ======================================================== */
+
+      function flipTile(i) {
+        if (locked) {
+          return;
+        }
+
+        const card = deck[i];
+
+        if (card.state !== "down") {
+          return;
+        }
+
+        if (flipped.length === 2) {
+          return;
+        }
+
+        resetIdleTimer();
+
+        startTimer();
+
+        totalCardSelections++;
+
+        const now = performance.now();
+
+        if (lastSelectionTime !== null) {
+          cardSelectionTimes.push(now - lastSelectionTime);
+        }
+
+        lastSelectionTime = now;
+
+        if (card.hasBeenFlipped) {
+          card.previousErrors++;
+        }
+
+        card.hasBeenFlipped = true;
+
+        flipped.push(i);
+
+        card.state = "up";
+
+        render();
+
+        if (flipped.length === 1) {
+          setInstruction("আপুনি এখন কাৰ্ড খোলিলে। মিল থকা আনখন কাৰ্ড খোলক।");
+
+          return;
+        }
+
+        moves++;
+
+        const a = flipped[0];
+
+        const b = flipped[1];
+
+        const firstCard = deck[a];
+
+        const secondCard = deck[b];
+
+        const isMatch = firstCard.pairKey === secondCard.pairKey;
+
+        if (isMatch) {
+          firstCard.state = "matched";
+
+          secondCard.state = "matched";
+
+          matchedCount++;
+
+          successfulMatches++;
+
+          if (
+            !firstCard.hasPreviouslyFailed &&
+            !secondCard.hasPreviouslyFailed
+          ) {
+            firstAttemptCorrect++;
+          }
+
+          flipped = [];
+
+          render();
+
+          updateStats();
+
+          if (matchedCount === currentDifficulty.pairs) {
+            finishGame();
+          } else {
+            setInstruction(
+              `সঠিক মিল! ${firstCard.name}। আপুনি এটা যোৰ বিচাৰি পালে।`,
+            );
+          }
+        } else {
+          mistakes++;
+
+          if (firstCard.previousErrors > 0 || secondCard.previousErrors > 0) {
+            repeatedCardErrors++;
+          }
+
+          firstCard.hasPreviouslyFailed = true;
+
+          secondCard.hasPreviouslyFailed = true;
+
+          locked = true;
+
+          updateStats();
+
+          setInstruction("মিল নাই। কাৰ্ড দুখন মনত ৰাখিবলৈ চেষ্টা কৰক।");
+
+          render();
+
+          setTimeout(() => {
+            firstCard.state = "down";
+
+            secondCard.state = "down";
+
+            flipped = [];
+
+            locked = false;
+
+            render();
+
+            setInstruction("পুনৰ চেষ্টা কৰিবলৈ কাৰ্ডত টেপ কৰক।");
+
+            resetIdleTimer();
+          }, FLIPBACK_DELAY);
+        }
+      }
+
+      /* ========================================================
+         35. FINISH GAME
+      ======================================================== */
+
+      async function finishGame() {
+        sessionCompleted = true;
+
+        sessionCompletedAt = new Date().toISOString();
+
+        stopTimer();
+
+        const metrics = calculateSessionMetrics();
+
+        const scoreResult = calculatePerformanceScore(metrics);
+
+        /* =====================================================
+           SESSION RESULT
+        ===================================================== */
+
+        const sessionResult = {
+          patientId: PATIENT_ID,
+
+          gameId: "memory_match",
+
+          domain: "memory",
+
+          difficulty: currentDifficulty.id,
+
+          difficultyIndex: currentDifficultyIndex,
+
+          difficultyConfig: {
+            tier: currentDifficulty.tier,
+
+            level: currentDifficulty.level,
+
+            pairs: currentDifficulty.pairs,
+
+            cards: currentDifficulty.cards,
+
+            columns: currentDifficulty.cols,
+          },
+
+          metrics,
+
+          performanceScore: scoreResult.total,
+
+          scoreComponents: scoreResult.components,
+
+          completed: true,
+
+          startedAt: sessionStartedAt,
+
+          completedAt: sessionCompletedAt,
+
+          timestamp: new Date().toISOString(),
+        };
+
+        /* =====================================================
+           SAVE TO LOCAL HISTORY
+        ===================================================== */
+
+        saveSession(sessionResult);
+
+        /* =====================================================
+           SAVE TO SHARED SQLITE DATABASE
+           
+           IMPORTANT:
+           Memory Match uses:
+           
+           gameName = "Memory Match"
+           
+           There is NO daily restriction.
+        ===================================================== */
+
+        if (typeof window.saveGameResult === "function") {
+          try {
+            await window.saveGameResult({
+              userId: PATIENT_ID,
+
+              gameName: "Memory Match",
+
+              level: currentDifficulty.level,
+
+              difficulty: currentDifficulty.tier,
+
+              totalNumbers: currentDifficulty.pairs,
+
+              score: scoreResult.total,
+
+              mistakes: mistakes,
+
+              timeTaken: secondsElapsed,
+
+              reactionTimes: cardSelectionTimes,
+
+              reactionTimeStdDev: metrics.selectionIntervalStdDev,
+
+              errorLog: [],
+
+              hesitationEvents: idleEvents,
+
+              completed: true,
+            });
+
+            console.log("✅ Memory Match saved to SQLite.");
+          } catch (error) {
+            console.error("❌ Memory Match SQLite save failed:", error);
+          }
+        }
+
+        /* =====================================================
+           PATIENT MESSAGE
+        ===================================================== */
+
+        setInstruction(
+          `বহুত ধুনীয়া! আপুনি ${moves} টা চেষ্টাত সকলো মিল বিচাৰি পালে।`,
+          false,
+        );
+
+        /* =====================================================
+           ADAPTIVE ENGINE
+        ===================================================== */
+
+        const decision = await askGeminiForNextDifficulty(sessionResult);
+
+        currentDifficultyIndex = decision.nextIndex;
+
+        currentDifficulty = DIFFICULTY_LEVELS[currentDifficultyIndex];
+
+        sessionResult.nextDifficulty = currentDifficulty.id;
+
+        sessionResult.adaptation = {
+          source: decision.source,
+
+          reason: decision.reason,
+
+          decidedAt: new Date().toISOString(),
+        };
+
+        /* =====================================================
+           UPDATE HISTORY
+        ===================================================== */
+
+        updateLastSession(sessionResult);
+
+        /* =====================================================
+           DEVELOPER CONSOLE
+        ===================================================== */
+
+        console.log("====================================");
+
+        console.log("YAADAVAN MEMORY MATCH RESULT");
+
+        console.log("====================================");
+
+        console.log("Patient:", PATIENT_ID);
+
+        console.log("Difficulty:", sessionResult.difficulty);
+
+        console.log("Score:", scoreResult.total);
+
+        console.log("Score components:", scoreResult.components);
+
+        console.log("Next difficulty:", currentDifficulty.id);
+
+        console.log("Adaptation source:", decision.source);
+
+        console.log("Reason:", decision.reason);
+
+        console.log("Metrics:", metrics);
+
+        /* =====================================================
+           COMPLETION MESSAGE
+        ===================================================== */
+
+        showSessionMessage(scoreResult.total);
+
+        /* =====================================================
+           IMPORTANT:
+           
+           MEMORY MATCH CAN BE PLAYED AGAIN
+           IMMEDIATELY.
+           
+           NO DAILY LIMIT.
+        ===================================================== */
+
+        newGameBtn.disabled = false;
+
+        newGameBtn.textContent = "Play Again (পুনৰ খেলক)";
+
+        setInstruction(
+          "আপুনি খেলখন সম্পূৰ্ণ কৰিছে। পুনৰ খেলিবলৈ বুটামটো টিপক।",
+          false,
+        );
+      }
+
+      /* ========================================================
+         36. UPDATE LAST SESSION
+      ======================================================== */
+
+      function updateLastSession(updatedSession) {
+        try {
+          const history = JSON.parse(
+            localStorage.getItem(HISTORY_STORAGE_KEY) || "[]",
+          );
+
+          for (let i = history.length - 1; i >= 0; i--) {
+            if (
+              history[i].patientId === PATIENT_ID &&
+              history[i].gameId === "memory_match" &&
+              history[i].timestamp === updatedSession.timestamp
+            ) {
+              history[i] = updatedSession;
+
+              break;
+            }
+          }
+
+          localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+        } catch (error) {
+          console.error("Could not update session:", error);
+        }
+      }
+
+      /* ========================================================
+         37. PATIENT-FACING COMPLETION MESSAGE
+      ======================================================== */
+
+      function showSessionMessage(score) {
+        sessionMessage.classList.add("show");
+
+        if (score >= 70) {
+          sessionMessage.textContent =
+            "অতি সুন্দৰ! পৰৱৰ্তী খেলখন আপোনাৰ বাবে অলপ বেছি প্ৰত্যাহ্বানজনক হ'ব।";
+        } else if (score >= 60) {
+          sessionMessage.textContent =
+            "ভাল চেষ্টা! পৰৱৰ্তী খেলখন একে ধৰণৰ থাকিব।";
+        } else {
+          sessionMessage.textContent =
+            "ভাল চেষ্টা! পৰৱৰ্তী খেলখন আপোনাৰ বাবে অলপ সহজ কৰি দিয়া হ'ব।";
+        }
+      }
+
+      /* ========================================================
+         38. START NEW GAME
+         
+         IMPORTANT:
+         There is NO daily check here.
+         
+         The user can play Memory Match
+         as many times as required.
+      ======================================================== */
+
+      function startNewGame() {
+        buildDeck();
+      }
+
+      /* ========================================================
+         39. BUTTON
+      ======================================================== */
+
+      newGameBtn.addEventListener("click", startNewGame);
+
+      /* ========================================================
+         40. INITIALIZE
+      ======================================================== */
+
+      async function initialize() {
+        /*
+         * Initialize shared SQLite.
+         */
+
+        await initializeSQLite();
+
+        /*
+         * Get previous Memory Match
+         * sessions from local history.
+         */
+
+        const history = getRecentMemoryHistory();
+
+        const latest = history[history.length - 1];
+
+        /*
+         * Continue from the previous
+         * adaptive difficulty.
+         */
+
+        if (latest && latest.nextDifficulty) {
+          const index = DIFFICULTY_LEVELS.findIndex(
+            (level) => level.id === latest.nextDifficulty,
+          );
+
+          if (index !== -1) {
+            currentDifficultyIndex = index;
+          }
+        } else {
+          /*
+           * New patient baseline = E2
+           */
+
+          currentDifficultyIndex = 1;
+        }
+
+        currentDifficulty = DIFFICULTY_LEVELS[currentDifficultyIndex];
+
+        /*
+         * Start the first game.
+         */
+
+        buildDeck();
+
+        /*
+         * Developer console.
+         */
+
+        console.log("====================================");
+
+        console.log("Yaadavan Memory Match initialized");
+
+        console.log("Patient ID:", PATIENT_ID);
+
+        console.log("Starting difficulty:", currentDifficulty.id);
+
+        console.log("Previous sessions:", history.length);
+
+        console.log("Daily restriction: NONE");
+
+        console.log("Memory Match can be played multiple times per day.");
+
+        console.log("Count Next remains unchanged.");
+
+        console.log("====================================");
+      }
+
+      /* ========================================================
+         41. START APPLICATION
+      ======================================================== */
+
+      initialize();
+    </script>
+
+    <!-- =========================================================
+         DATABASE NOTE
+
+         This page uses the shared SQLite helper.
+
+         Required functions:
+
+         window.initSQLite
+         window.saveGameResult
+         window.getAllGameResults
+
+         IMPORTANT:
+
+         Memory Match DOES NOT call
+         getAllGameResults() to impose a
+         daily restriction.
+
+         Count Next remains independent.
+
+         Both games can save to the same
+         SQLite database using different
+         game_name values:
+
+         "Count Next"
+         "Memory Match"
+    ========================================================= -->
+  </body>
 </html>
