@@ -1,303 +1,238 @@
-/* =====================================
-   GENERAL
-===================================== */
-
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-
-    margin: 0;
-
-    font-family: Arial, sans-serif;
-
-    background: #f4f6f8;
-
-    color: #333;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f6fb;
+  color: #263238;
 }
 
 .app {
-
-    width: 100%;
-
-    min-height: 100vh;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    padding: 30px;
+  width: 100%;
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
-
-
-/* =====================================
-   PAGE
-===================================== */
 
 .page {
-
-    width: 100%;
-
-    max-width: 650px;
+  width: 100%;
+  max-width: 1050px;
+  margin: 20px auto;
 }
 
-
-/* =====================================
-   CARD
-===================================== */
-
 .card {
-
-    background: white;
-
-    padding: 35px;
-
-    border-radius: 18px;
-
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-
-    text-align: center;
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 32px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.08);
+  text-align: center;
 }
 
 h1 {
-
-    font-size: 34px;
-
-    margin-bottom: 5px;
+  margin: 0 0 8px;
+  font-size: 34px;
+  color: #273b80;
 }
 
 h2 {
-
-    font-size: 25px;
-
-    margin-bottom: 10px;
+  margin: 0 0 14px;
+  font-size: 23px;
+  color: #273b80;
 }
 
-h3 {
-
-    margin-top: 25px;
+p {
+  line-height: 1.5;
 }
 
-.subtitle {
-
-    font-size: 20px;
-
-    color: #666;
+.subtitle,
+.small-text {
+  color: #68727d;
 }
 
 .small-text {
-
-    font-size: 14px;
-
-    color: #666;
+  font-size: 14px;
 }
 
-
-/* =====================================
-   STEP INDICATOR
-===================================== */
-
-.step-indicator {
-
-    margin: 20px 0;
-
-    font-size: 16px;
-
-    color: #666;
+.hidden {
+  display: none !important;
 }
-
-
-/* =====================================
-   INPUTS
-===================================== */
 
 input,
-select {
-
-    width: 100%;
-
-    padding: 14px;
-
-    margin: 8px 0;
-
-    border: 1px solid #ccc;
-
-    border-radius: 8px;
-
-    font-size: 16px;
-
-    background: white;
+select,
+textarea {
+  width: 100%;
+  margin: 8px 0;
+  padding: 13px;
+  border: 1px solid #cbd2dc;
+  border-radius: 9px;
+  background: #fff;
+  font: inherit;
 }
 
-
-/* =====================================
-   BUTTONS
-===================================== */
+textarea {
+  min-height: 90px;
+  resize: vertical;
+}
 
 button {
-
-    padding: 13px 22px;
-
-    margin: 8px;
-
-    border: none;
-
-    border-radius: 8px;
-
-    background: #5b73e8;
-
-    color: white;
-
-    font-size: 16px;
-
-    cursor: pointer;
+  margin: 8px 4px;
+  padding: 13px 20px;
+  border: 0;
+  border-radius: 9px;
+  background: #526de5;
+  color: white;
+  font: inherit;
+  cursor: pointer;
 }
 
 button:hover {
-
-    opacity: 0.9;
+  opacity: 0.9;
 }
 
-.secondary {
-
-    background: #777;
+button.secondary {
+  background: #77808c;
 }
 
-.add-button {
-
-    background: #eee;
-
-    color: #333;
-
-    border: 1px solid #ccc;
-
-    width: 100%;
+.role-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 24px 0;
 }
-
-
-/* =====================================
-   BUTTON ROW
-===================================== */
 
 .button-row {
-
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
 }
 
-
-/* =====================================
-   FAMILY MEMBERS
-===================================== */
-
-.family-member {
-
-    padding: 15px;
-
-    margin-bottom: 12px;
-
-    background: #f7f7f7;
-
-    border-radius: 10px;
+.step-indicator {
+  margin: 20px 0;
+  color: #68727d;
 }
-
-
-/* =====================================
-   CAMERA
-===================================== */
 
 video {
-
-    width: 100%;
-
-    max-width: 450px;
-
-    height: 300px;
-
-    object-fit: cover;
-
-    border-radius: 15px;
-
-    background: #222;
-
-    margin: 15px auto;
-
-    display: block;
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: 300px;
+  margin: 18px auto;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #20242a;
 }
 
-
-/* =====================================
-   STATUS
-===================================== */
-
-#face-status,
-#login-status {
-
-    min-height: 25px;
-
-    font-weight: bold;
+.status {
+  min-height: 24px;
+  font-weight: bold;
 }
 
-
-/* =====================================
-   HIDDEN
-===================================== */
-
-.hidden {
-
-    display: none !important;
+.warning {
+  min-height: 24px;
+  color: #b23b3b;
+  font-weight: bold;
 }
 
-
-/* =====================================
-   GAME
-===================================== */
-
-.game-container {
-
-    width: 100%;
-
-    max-width: 700px;
-
-    text-align: center;
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
-
-/* =====================================
-   RESPONSIVE
-===================================== */
-
-@media (max-width: 600px) {
-
-    .app {
-
-        padding: 15px;
-    }
-
-    .card {
-
-        padding: 25px 18px;
-    }
-
-    h1 {
-
-        font-size: 28px;
-    }
-
-    video {
-
-        height: 250px;
-    }
-
-    .button-row {
-
-        flex-direction: column;
-    }
-
+.dashboard-header h1 {
+  margin-bottom: 4px;
 }
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.panel {
+  padding: 22px;
+  background: #fff;
+  border: 1px solid #e0e6ef;
+  border-radius: 16px;
+  box-shadow: 0 3px 14px rgba(0, 0, 0, 0.04);
+}
+
+.panel h2 {
+  font-size: 20px;
+}
+
+.clickable-panel {
+  cursor: pointer;
+}
+
+.clickable-panel:hover {
+  border-color: #526de5;
+}
+
+.panel-details {
+  margin-top: 15px;
+  padding-top: 12px;
+  border-top: 1px solid #e0e6ef;
+}
+
+.panel a {
+  color: #405bd0;
+  font-weight: bold;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.check-row input {
+  width: auto;
+  margin: 0;
+}
+
+ul {
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+@media (max-width: 700px) {
+  .app {
+    padding: 14px;
+  }
+
+  .card {
+    padding: 24px 17px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  .role-grid,
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  video {
+    height: 250px;
+  }
+}
+
+.game-launch-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:22px 0}.game-launch-grid button{margin:0;min-height:90px;font-size:17px}.game-launch-grid small{font-size:12px;opacity:.9}.patient-section-title{font-size:18px;margin-top:24px}.analytics-list{padding-left:20px}.metric-good{color:#247a45}.metric-warn{color:#a65b19}@media(max-width:700px){.game-launch-grid{grid-template-columns:1fr}}
