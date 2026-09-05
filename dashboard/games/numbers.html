@@ -835,22 +835,6 @@
 
       /* =====================================================
          DASHBOARD PATH
-         
-         If your Count Next file is inside:
-         
-         sih/
-           dashboard/
-             index.html
-           games/
-             count-next/
-               index.html
-
-         then:
-
-         ../../dashboard/index.html
-
-         is correct.
-
          ===================================================== */
 
       const DASHBOARD_PATH = "../index.html";
@@ -983,7 +967,11 @@
       ===================================================== */
 
       function getCurrentPatientId() {
-        return "prototype-user-001";
+        const patient = JSON.parse(localStorage.getItem("patient") || "null");
+        if (patient && patient.id) {
+          return patient.id;
+        }
+        return localStorage.getItem("yaadavan_patient_id") || "prototype-user-001";
       }
 
       /* =====================================================
@@ -1446,6 +1434,66 @@
       }
 
       /* =====================================================
+         SAVE TO CAREGIVER DASHBOARD
+      ===================================================== */
+
+      function saveNumbersToCaregiverDashboard(success, score) {
+        try {
+          const patient = JSON.parse(localStorage.getItem("patient") || "null");
+          const patientId = getCurrentPatientId();
+          const timestamp = new Date().toISOString();
+
+          const totalClicks = (nextNumber - 1) + mistakes;
+          const calculatedAccuracy = totalClicks > 0
+            ? Math.round(((nextNumber - 1) / totalClicks) * 100)
+            : 0;
+
+          const result = {
+            id: "numbers_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+            patientId: patientId,
+            gameId: "numbers",
+            gameName: "Numbers",
+            domain: "attention",
+            timestamp: timestamp,
+            date: new Date(timestamp).toLocaleDateString("en-CA"),
+            score: Math.round(score),
+            accuracy: calculatedAccuracy,
+            duration: timeTaken,
+            timeTaken: timeTaken,
+            moves: totalClicks,
+            mistakes: mistakes,
+            totalNumbers: totalNumbers,
+            level: currentLevel,
+            difficulty: difficulty,
+            completed: Boolean(success),
+            completedAt: timestamp
+          };
+
+          const existingResults = JSON.parse(localStorage.getItem("gameResults") || "[]");
+          existingResults.push(result);
+          localStorage.setItem("gameResults", JSON.stringify(existingResults));
+
+          if (patient) {
+            const completedResults = existingResults.filter(
+              (item) => String(item.patientId) === String(patient.id) && item.completed
+            );
+            patient.gamesCompleted = completedResults.length;
+            patient.lastActive = new Date(timestamp).toLocaleString();
+            
+            const minutes = Math.floor(timeTaken / 60);
+            const seconds = timeTaken % 60;
+            patient.sessionDuration = `${minutes}m ${seconds}s`;
+
+            localStorage.setItem("patient", JSON.stringify(patient));
+          }
+
+          console.log("✅ Numbers / Count Next saved to caregiver analytics:", result);
+        } catch (error) {
+          console.error("❌ Could not save Numbers analytics to caregiver dashboard:", error);
+        }
+      }
+
+      /* =====================================================
          FINISH GAME
       ===================================================== */
 
@@ -1457,6 +1505,10 @@
         /* SCORE */
 
         const score = Math.max(0, 100 - mistakes * 20);
+
+        /* SAVE TO CAREGIVER DASHBOARD LOCALSTORAGE */
+
+        saveNumbersToCaregiverDashboard(success, score);
 
         /* SAVE TO SQLITE */
 
