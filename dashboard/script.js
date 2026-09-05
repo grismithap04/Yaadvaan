@@ -386,13 +386,27 @@ async function recognizePatient() {
     patient.lastActive = new Date().toLocaleString();
     localStorage.setItem("patient", JSON.stringify(patient));
 
-    $("login-status").textContent = "✓ Patient recognized.";
-stopLoginCamera();
-setTimeout(openTodaysGame, 500);
-setTimeout(() => {
-  launchDailyGame();
-}, 500);
+   $("login-status").textContent = "✓ Patient recognized.";
+$("login-warning").textContent = "";
 
+stopLoginCamera();
+
+patient.lastActive = new Date().toLocaleString();
+localStorage.setItem("patient", JSON.stringify(patient));
+setTimeout(() => {
+  openTodaysGame();
+}, 500);
+setTimeout(() => {
+  const patientHomePage = document.getElementById("patient-home-page");
+
+  if (patientHomePage) {
+    showPage("patient-home-page");
+  } else {
+    console.error("❌ patient-home-page section was not found.");
+    $("login-status").textContent =
+      "Patient recognized, but the patient dashboard page was not found.";
+  }
+}, 700);
   } catch (error) {
     console.error("Face verification error:", error);
     $("login-status").textContent =
@@ -407,27 +421,77 @@ function openGame(game) {
   window.location.href = target;
 }
 function openTodaysGame() {
-  const today = new Date().toISOString().slice(0, 10);
-  const saved = JSON.parse(localStorage.getItem("dailyGame") || "null");
+  const patient = JSON.parse(
+    localStorage.getItem("patient") || "null"
+  );
 
-  let game;
-
-  // Same game for the whole day
-  if (saved && saved.date === today) {
-    game = saved.game;
-  } else {
-    game = Math.random() < 0.5 ? "numbers" : "memory";
-    localStorage.setItem("dailyGame", JSON.stringify({
-      date: today,
-      game: game
-    }));
+  if (!patient) {
+    showPage("role-page");
+    return;
   }
 
-  const gamePath = game === "numbers"
-    ? "games/numbers.html"
-    : "games/memory match/sih.html";
+  const today = new Date().toLocaleDateString("en-CA");
 
-  window.location.href = gamePath;
+  const savedDailyGame = JSON.parse(
+    localStorage.getItem("dailyGame") || "null"
+  );
+
+  let selectedGame;
+
+  /*
+    Keep exactly the same game for the entire local calendar day.
+    A new game is selected only when the date changes.
+  */
+  if (
+    savedDailyGame &&
+    savedDailyGame.patientId === patient.id &&
+    savedDailyGame.date === today &&
+    savedDailyGame.game
+  ) {
+    selectedGame = savedDailyGame.game;
+  } else {
+    const availableGames = [
+      "memory",
+      "numbers"
+    ];
+
+    selectedGame =
+      availableGames[
+        Math.floor(Math.random() * availableGames.length)
+      ];
+
+    localStorage.setItem(
+      "dailyGame",
+      JSON.stringify({
+        patientId: patient.id,
+        date: today,
+        game: selectedGame
+      })
+    );
+  }
+
+  /*
+    Store the assignment separately so every game can identify
+    which activity was assigned today.
+  */
+  localStorage.setItem(
+    "currentDailyGame",
+    JSON.stringify({
+      patientId: patient.id,
+      date: today,
+      game: selectedGame
+    })
+  );
+
+  if (selectedGame === "memory") {
+    window.location.href = "games/memory match/sih.html";
+    return;
+  }
+
+  if (selectedGame === "numbers") {
+    window.location.href = "games/numbers.html";
+    return;
+  }
 }
 function getGameResults() {
   return JSON.parse(localStorage.getItem("gameResults") || "[]");
@@ -477,71 +541,374 @@ function loadCaregiverDashboard() {
   showPage("caregiver-dashboard-page");
 }
 function updateCaregiverAnalytics() {
-  const patient = JSON.parse(localStorage.getItem("patient") || "null");
-  const wellbeing = JSON.parse(localStorage.getItem("wellbeing") || "null");
-  const gameResults = JSON.parse(localStorage.getItem("gameResults") || "[]");
+  const patient = JSON.parse(
+    localStorage.getItem("patient") || "null"
+  );
 
   if (!patient) return;
 
-  const today = new Date().toISOString().slice(0, 10);
-  const todayResults = gameResults.filter(result => result.date === today);
+  const wellbeing = JSON.parse(
+    localStorage.getItem("wellbeing") || "null"
+  );
 
-  // 1. Today's Session
-  const todayPanel = $("today-panel");
+  const allResults = JSON.parse(
+    localStorage.getItem("gameResults") || "[]"
+  );
 
-  if (todayResults.length === 0) {
-    todayPanel.innerHTML = "<p>No games completed today.</p>";
-  } else {
-    todayPanel.innerHTML = todayResults.map(result => `
-      <p>
-        <strong>${result.gameName || "Game"}</strong><br>
-        Score: ${result.score ?? "Not recorded"}<br>
-        Accuracy: ${result.accuracy ?? "Not recorded"}<br>
-        Time: ${result.duration ?? "Not recorded"}<br>
-        Status: ${result.completed ? "Completed" : "Incomplete"}
-      </p>
-    `).join("");
+  const patientResults = allResults
+    .filter(result => {
+      return String(result.patientId) === String(patient.id);
+    })
+    .sort((a, b) => {
+      return new Date(a.timestamp) - new Date(b.timestamp);
+    });
+
+  const today = new Date().toLocaleDateString("en-CA");
+
+  const todayResults = patientResults.filter(result => {
+    const resultDate = new Date(
+      result.timestamp || result.date
+    ).toLocaleDateString("en-CA");
+
+    return resultDate === today;
+  });
+
+  const completedResults = patientResults.filter(
+    result => result.completed
+  );
+
+  function safeNumber(value, fallback = 0) {
+    const number = Number(value);
+    return Number.isFinite(number)
+      ? number
+      : fallback;
   }
 
-  // 2. Cognitive Areas
-  const cognitivePanel = $("cognitive-panel");
+  function average(items, field) {
+    if (!items.length) return 0;
 
-  const memoryResults = gameResults.filter(r => r.gameName === "Memory Match");
-  const numbersResults = gameResults.filter(r => r.gameName === "Numbers");
+    return Math.round(
+      items.reduce(
+        (sum, item) => sum + safeNumber(item[field]),
+        0
+      ) / items.length
+    );
+  }
 
-  cognitivePanel.innerHTML = `
+  function latest(items) {
+    return items.length
+      ? items[items.length - 1]
+      : null;
+  }
+
+  function gameLabel(result) {
+    return result.gameName || result.gameId || "Game";
+  }
+
+  /*
+    1. Patient Overview
+  */
+  const lastResult = latest(patientResults);
+
+  $("overview-name").textContent =
+    patient.name || "—";
+
+  $("overview-id").textContent =
+    patient.id || "—";
+
+  $("overview-last-active").textContent =
+    patient.lastActive ||
+    (lastResult
+      ? new Date(lastResult.timestamp).toLocaleString()
+      : "Not recorded");
+
+  $("overview-duration").textContent =
+    patient.sessionDuration ||
+    (lastResult
+      ? formatDuration(
+          lastResult.duration ||
+          lastResult.timeTaken
+        )
+      : "Not recorded");
+
+  $("overview-games").textContent =
+    completedResults.length;
+
+  /*
+    2. Today's Session
+  */
+  if (todayResults.length === 0) {
+    $("today-panel").innerHTML =
+      "<p>No games completed today.</p>";
+  } else {
+    $("today-panel").innerHTML =
+      todayResults
+        .map(result => {
+          const duration =
+            result.duration ??
+            result.timeTaken ??
+            0;
+
+          return `
+            <div class="analytics-item">
+              <strong>${gameLabel(result)}</strong>
+              <br>
+              Score: ${result.score ?? "Not recorded"}
+              <br>
+              Accuracy: ${result.accuracy ?? 0}%
+              <br>
+              Time: ${formatDuration(duration)}
+              <br>
+              Moves: ${result.moves ?? "—"}
+              <br>
+              Mistakes: ${result.mistakes ?? 0}
+              <br>
+              Status:
+              ${
+                result.completed
+                  ? "Completed"
+                  : "Incomplete"
+              }
+            </div>
+          `;
+        })
+        .join("");
+  }
+
+  /*
+    3. Cognitive Areas
+  */
+  const memoryResults = patientResults.filter(
+    result =>
+      result.gameId === "memory_match" ||
+      result.gameName === "Memory Match"
+  );
+
+  const numbersResults = patientResults.filter(
+    result =>
+      result.gameId === "numbers" ||
+      result.gameName === "Numbers" ||
+      result.gameName === "Count Next"
+  );
+
+  const languageResults = patientResults.filter(
+    result =>
+      result.domain === "language" ||
+      result.gameName === "Language"
+  );
+
+  const visuospatialResults = patientResults.filter(
+    result =>
+      result.domain === "visuospatial" ||
+      result.gameName === "Picture Bingo"
+  );
+
+  const memoryLatest = latest(memoryResults);
+  const numbersLatest = latest(numbersResults);
+
+  $("cognitive-panel").innerHTML = `
     <ul>
-      <li>Memory: ${memoryResults.length ? "Results available" : "No results yet"}</li>
-      <li>Attention: ${numbersResults.length ? "Results available" : "No results yet"}</li>
-      <li>Executive function: ${numbersResults.length ? "Results available" : "No results yet"}</li>
-      <li>Language: No results yet</li>
-      <li>Visuospatial: ${memoryResults.length ? "Results available" : "No results yet"}</li>
+      <li>
+        <strong>Memory:</strong>
+        ${
+          memoryLatest
+            ? `${memoryResults.length} session(s);
+               latest accuracy ${memoryLatest.accuracy ?? 0}%`
+            : "No results yet"
+        }
+      </li>
+
+      <li>
+        <strong>Attention:</strong>
+        ${
+          numbersLatest
+            ? `${numbersResults.length} session(s);
+               latest accuracy ${numbersLatest.accuracy ?? 0}%`
+            : "No results yet"
+        }
+      </li>
+
+      <li>
+        <strong>Executive function:</strong>
+        ${
+          patientResults.length
+            ? `${completedResults.length}/${patientResults.length}
+               sessions completed`
+            : "No results yet"
+        }
+      </li>
+
+      <li>
+        <strong>Language:</strong>
+        ${
+          languageResults.length
+            ? `${languageResults.length} session(s) recorded`
+            : "No results yet"
+        }
+      </li>
+
+      <li>
+        <strong>Visuospatial:</strong>
+        ${
+          visuospatialResults.length
+            ? `${visuospatialResults.length} session(s) recorded`
+            : memoryResults.length
+              ? "Picture matching activity recorded"
+              : "No results yet"
+        }
+      </li>
     </ul>
   `;
 
-  // 3. Progress Over Time
-  $("progress-panel").innerHTML = `
-    <p>Total sessions: ${gameResults.length}</p>
-    <p>Games completed: ${patient.gamesCompleted || 0}</p>
-    <p>Last active: ${patient.lastActive || "Not recorded"}</p>
-  `;
+  /*
+    4. Progress Over Time
+  */
+  const averageAccuracy =
+    average(completedResults, "accuracy");
 
-  // 4. Recent Observations
+  const averageDuration =
+    completedResults.length
+      ? Math.round(
+          completedResults.reduce(
+            (sum, result) =>
+              sum +
+              safeNumber(
+                result.duration ??
+                result.timeTaken
+              ),
+            0
+          ) / completedResults.length
+        )
+      : 0;
+
+  const progressRows = patientResults
+    .slice(-7)
+    .reverse()
+    .map(result => {
+      const date = new Date(
+        result.timestamp
+      ).toLocaleDateString();
+
+      return `
+        <li>
+          ${date} — ${gameLabel(result)}:
+          ${result.accuracy ?? 0}% accuracy,
+          ${formatDuration(
+            result.duration ??
+            result.timeTaken
+          )},
+          score ${result.score ?? "—"}
+        </li>
+      `;
+    })
+    .join("");
+
+  $("progress-panel").innerHTML = patientResults.length
+    ? `
+      <p>
+        <strong>${patientResults.length}</strong>
+        total session(s).
+      </p>
+
+      <p>
+        Completed games:
+        <strong>${completedResults.length}</strong>
+      </p>
+
+      <p>
+        Average accuracy:
+        <strong>${averageAccuracy}%</strong>
+      </p>
+
+      <p>
+        Average duration:
+        <strong>${formatDuration(averageDuration)}</strong>
+      </p>
+
+      <p>
+        Last active:
+        <strong>${patient.lastActive || "Not recorded"}</strong>
+      </p>
+
+      <ul class="analytics-list">
+        ${progressRows}
+      </ul>
+    `
+    : "<p>No progress recorded yet.</p>";
+
+  /*
+    5. Recent Observations
+  */
+  const observations = patientResults
+    .filter(result => {
+      const mistakes =
+        safeNumber(result.mistakes);
+
+      const moves =
+        safeNumber(result.moves);
+
+      const pairs =
+        safeNumber(
+          result.pairs ||
+          result.matchedPairs
+        );
+
+      const unusuallyManyMoves =
+        pairs > 0 &&
+        moves > pairs * 3;
+
+      return (
+        !result.completed ||
+        mistakes >= 3 ||
+        unusuallyManyMoves
+      );
+    })
+    .slice(-5)
+    .reverse();
+
   $("observations-panel").innerHTML = `
-    <p>Incomplete games: ${gameResults.filter(r => !r.completed).length}</p>
-    <p>Recent games: ${gameResults.length}</p>
+    <p>
+      Incomplete games:
+      <strong>
+        ${patientResults.filter(
+          result => !result.completed
+        ).length}
+      </strong>
+    </p>
+
+    <p>
+      Recent games:
+      <strong>${patientResults.length}</strong>
+    </p>
+
+    ${
+      observations.length
+        ? `
+          <ul class="analytics-list">
+            ${observations
+              .map(result => `
+                <li>
+                  ${gameLabel(result)}:
+                  ${
+                    result.completed
+                      ? "Repeated mistakes or extra moves."
+                      : "Session ended before completion."
+                  }
+                </li>
+              `)
+              .join("")}
+          </ul>
+        `
+        : "<p>No difficulty observations yet.</p>"
+    }
   `;
 
-  // 5. Medicine Tracking
-  const medicinePanel = document.querySelector("#medicine-taken");
-
-  if (medicinePanel) {
-    medicinePanel.checked = Boolean(wellbeing?.medicineTaken);
-  }
-
-  const medicineNotes = $("medicine-notes");
-  if (medicineNotes) {
-    medicineNotes.value = wellbeing?.medicineNotes || "";
+  /*
+    6. Medicine and wellbeing remain saved separately.
+    Reload them so the dashboard displays the latest values.
+  */
+  if (wellbeing) {
+    loadWellbeing();
   }
 }
 function getGuidelines(language) {
