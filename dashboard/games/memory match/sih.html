@@ -682,21 +682,42 @@
 
       const PATIENT_STORAGE_KEY = "yaadavan_patient_id";
 
-      function getPatientId() {
-        let patientId = localStorage.getItem(PATIENT_STORAGE_KEY);
+function getPatientId() {
+  const registeredPatient = JSON.parse(
+    localStorage.getItem("patient") || "null"
+  );
 
-        if (!patientId) {
-          patientId =
-            "patient_" +
-            Date.now() +
-            "_" +
-            Math.random().toString(36).substring(2, 8);
+  /*
+    Always use the same ID that the caregiver dashboard uses.
+    This prevents YAD0001 and patient_timestamp_random from
+    being treated as two different patients.
+  */
+  if (registeredPatient && registeredPatient.id) {
+    localStorage.setItem(
+      PATIENT_STORAGE_KEY,
+      registeredPatient.id
+    );
 
-          localStorage.setItem(PATIENT_STORAGE_KEY, patientId);
-        }
+    return registeredPatient.id;
+  }
 
-        return patientId;
-      }
+  let patientId = localStorage.getItem(PATIENT_STORAGE_KEY);
+
+  if (!patientId) {
+    patientId =
+      "patient_" +
+      Date.now() +
+      "_" +
+      Math.random().toString(36).substring(2, 8);
+
+    localStorage.setItem(
+      PATIENT_STORAGE_KEY,
+      patientId
+    );
+  }
+
+  return patientId;
+}
 
       const PATIENT_ID = getPatientId();
 
@@ -2120,13 +2141,209 @@ Return exactly:
         console.log("Reason:", decision.reason);
 
         console.log("Metrics:", metrics);
+        
+        /* =====================================================
+   SAVE MEMORY MATCH RESULT FOR CAREGIVER DASHBOARD
+===================================================== */
 
+function saveMemoryMatchToCaregiverDashboard(
+  metrics,
+  scoreResult,
+  sessionResult
+) {
+  try {
+    const patient = JSON.parse(
+      localStorage.getItem("patient") || "null"
+    );
+
+    const patientId =
+      patient?.id ||
+      localStorage.getItem("yaadavan_patient_id") ||
+      PATIENT_ID;
+
+    const timestamp =
+      sessionResult.completedAt ||
+      sessionResult.timestamp ||
+      new Date().toISOString();
+
+    const result = {
+      id:
+        "memory_match_" +
+        Date.now() +
+        "_" +
+        Math.random().toString(36).slice(2, 8),
+
+      patientId,
+      gameId: "memory_match",
+      gameName: "Memory Match",
+      domain: "memory",
+
+      timestamp,
+      date: new Date(timestamp).toLocaleDateString("en-CA"),
+
+      score: Number(scoreResult.total || 0),
+
+      /*
+        metrics.accuracy is stored as a fraction:
+        0.75 becomes 75 for the dashboard.
+      */
+      accuracy: Math.round(
+        Number(metrics.accuracy || 0) * 100
+      ),
+
+      duration: Number(
+        metrics.durationSeconds ||
+        sessionResult.metrics?.durationSeconds ||
+        0
+      ),
+
+      timeTaken: Number(
+        metrics.durationSeconds ||
+        sessionResult.metrics?.durationSeconds ||
+        0
+      ),
+
+      moves: Number(metrics.moves || 0),
+      pairs: Number(metrics.pairs || 0),
+      matchedPairs: Number(metrics.matchedPairs || 0),
+      mistakes: Number(metrics.mistakes || 0),
+      repeatedCardErrors: Number(
+        metrics.repeatedCardErrors || 0
+      ),
+      idleEvents: Number(metrics.idleEvents || 0),
+
+      difficulty: sessionResult.difficulty || "",
+      difficultyIndex: sessionResult.difficultyIndex ?? null,
+
+      completed: Boolean(
+        sessionResult.completed
+      ),
+
+      startedAt: sessionResult.startedAt || null,
+      completedAt: sessionResult.completedAt || timestamp
+    };
+
+    const existingResults = JSON.parse(
+      localStorage.getItem("gameResults") || "[]"
+    );
+
+    existingResults.push(result);
+
+    localStorage.setItem(
+      "gameResults",
+      JSON.stringify(existingResults)
+    );
+
+    /*
+      Update the patient overview values too.
+    */
+    if (patient) {
+      const completedResults = existingResults.filter(
+        item =>
+          item.patientId === patientId &&
+          item.completed
+      );
+
+      patient.gamesCompleted =
+        completedResults.length;
+
+      patient.lastActive =
+        new Date(timestamp).toLocaleString();
+
+      patient.sessionDuration =
+        formatDuration(result.duration);
+
+      localStorage.setItem(
+        "patient",
+        JSON.stringify(patient)
+      );
+    }
+
+    console.log(
+      "✅ Memory Match saved to caregiver analytics:",
+      result
+    );
+  } catch (error) {
+    console.error(
+      "❌ Could not save Memory Match analytics:",
+      error
+    );
+  }
+}
         /* =====================================================
          COMPLETION MESSAGE
       ===================================================== */
+      saveMemoryMatchToCaregiverDashboard(
+  metrics,
+  scoreResult,
+  sessionResult
+);
 
+showSessionMessage(scoreResult.total);
         showSessionMessage(scoreResult.total);
+        /* =====================================================
+   SAVE RESULT FOR CAREGIVER DASHBOARD
+===================================================== */
 
+try {
+  const dashboardResults = JSON.parse(
+    localStorage.getItem("gameResults") || "[]"
+  );
+
+  const dashboardResult = {
+    patientId: PATIENT_ID,
+    gameId: "memory_match",
+    gameName: "Memory Match",
+    domain: "memory",
+
+    timestamp: new Date().toISOString(),
+    date: new Date().toISOString().slice(0, 10),
+
+    score: Math.round(scoreResult.total),
+
+    // Use the actual metrics from the game
+    accuracy: Math.round(
+      Number(metrics.accuracy ?? metrics.pairs ?? 0)
+    ),
+
+    duration: Number(
+      metrics.durationSeconds ??
+      metrics.duration ??
+      secondsElapsed ??
+      0
+    ),
+
+    timeTaken: Number(
+      metrics.durationSeconds ??
+      metrics.duration ??
+      secondsElapsed ??
+      0
+    ),
+
+    moves: Number(metrics.moves ?? moves ?? 0),
+    pairs: Number(metrics.pairs ?? currentDifficulty.pairs ?? 0),
+    mistakes: Number(metrics.mistakes ?? mistakes ?? 0),
+
+    completed: true
+  };
+
+  dashboardResults.push(dashboardResult);
+
+  localStorage.setItem(
+    "gameResults",
+    JSON.stringify(dashboardResults)
+  );
+
+  console.log(
+    "✅ Saved to caregiver dashboard:",
+    dashboardResult
+  );
+} catch (error) {
+  console.error(
+    "❌ Could not save caregiver dashboard result:",
+    error
+  );
+}
         /* =====================================================
          PLAY AGAIN
       ===================================================== */
