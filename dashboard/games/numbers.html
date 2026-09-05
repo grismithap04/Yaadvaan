@@ -35,7 +35,7 @@
         pointer-events: none;
       }
 
-      /* HEADER */
+      /* ================= HEADER ================= */
 
       header {
         height: 82px;
@@ -81,7 +81,7 @@
         margin-top: 2px;
       }
 
-      /* MAIN */
+      /* ================= MAIN ================= */
 
       main {
         width: 100%;
@@ -98,7 +98,7 @@
         display: block;
       }
 
-      /* INSTRUCTION CARD */
+      /* ================= INSTRUCTION CARD ================= */
 
       .instruction-card {
         width: 100%;
@@ -191,7 +191,7 @@
         line-height: 1.6;
       }
 
-      /* BUTTON */
+      /* ================= BUTTONS ================= */
 
       .primary-btn {
         border: none;
@@ -224,7 +224,39 @@
         cursor: wait;
       }
 
-      /* GAME HEADER */
+      /* ================= EXIT BUTTON ================= */
+
+      .exit-btn {
+        border: 2px solid #527d45;
+        background: white;
+        color: #527d45;
+        padding: 15px 42px;
+        font-size: 18px;
+        font-weight: bold;
+        border-radius: 13px;
+        cursor: pointer;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease,
+          transform 0.2s ease;
+        margin-left: 10px;
+      }
+
+      .exit-btn:hover {
+        background: #527d45;
+        color: white;
+        transform: translateY(-2px);
+      }
+
+      .result-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      /* ================= GAME HEADER ================= */
 
       .game-header {
         background: rgba(255, 255, 255, 0.96);
@@ -284,7 +316,7 @@
         color: #b15e45;
       }
 
-      /* GAME AREA */
+      /* ================= GAME AREA ================= */
 
       .game-area {
         position: relative;
@@ -388,7 +420,7 @@
         }
       }
 
-      /* RESULT */
+      /* ================= RESULT ================= */
 
       .result-card {
         width: 100%;
@@ -428,7 +460,7 @@
         margin-bottom: 28px;
       }
 
-      /* FOOTER */
+      /* ================= FOOTER ================= */
 
       footer {
         text-align: center;
@@ -444,7 +476,7 @@
         z-index: 10;
       }
 
-      /* TABLET */
+      /* ================= TABLET ================= */
 
       @media (max-width: 850px) {
         .game-header {
@@ -466,7 +498,7 @@
         }
       }
 
-      /* MOBILE */
+      /* ================= MOBILE ================= */
 
       @media (max-width: 550px) {
         header {
@@ -530,6 +562,16 @@
         .primary-btn {
           padding: 15px 42px;
           font-size: 18px;
+        }
+
+        .exit-btn {
+          padding: 14px 35px;
+          font-size: 17px;
+          margin-left: 0;
+        }
+
+        .result-buttons {
+          flex-direction: column;
         }
 
         .game-header {
@@ -597,7 +639,7 @@
         }
       }
 
-      /* VERY SMALL PHONES */
+      /* ================= VERY SMALL PHONES ================= */
 
       @media (max-width: 380px) {
         .number-grid {
@@ -617,7 +659,7 @@
   </head>
 
   <body>
-    <!-- HEADER -->
+    <!-- ================= HEADER ================= -->
 
     <header>
       <div class="brand">
@@ -625,6 +667,7 @@
 
         <div class="brand-text">
           <h1>স্মৃতি যাত্ৰা (Memory Journey)</h1>
+
           <p>
             উত্তৰ-পূৰ্বাঞ্চলৰ মাজেৰে এক যাত্ৰা (A journey through North-East
             India)
@@ -634,7 +677,7 @@
     </header>
 
     <main>
-      <!-- INSTRUCTION SCREEN -->
+      <!-- ================= INSTRUCTION SCREEN ================= -->
 
       <section id="instructionScreen" class="screen active">
         <div class="instruction-card">
@@ -648,13 +691,16 @@
             <h3>কেনেকৈ খেলিব (How to play)</h3>
 
             <p>
-              পৰ্দাত <strong>বিভিন্ন সংখ্যা (different numbers)</strong> আছে।
+              পৰ্দাত
+              <strong>বিভিন্ন সংখ্যা (different numbers)</strong>
+              আছে।
             </p>
 
             <p>প্ৰথমে <strong>১ (1)</strong> বিচাৰি ক্লিক কৰক।</p>
 
             <p>
-              তাৰ পিছত <strong>২, ৩, ৪... (2, 3, 4...)</strong>
+              তাৰ পিছত
+              <strong>২, ৩, ৪... (2, 3, 4...)</strong>
               ক্ৰম অনুসৰি বিচাৰি ক্লিক কৰক।
             </p>
 
@@ -664,13 +710,14 @@
             </p>
 
             <p>
-              আপুনি সৰ্বাধিক <strong>৫টা ভুল (5 mistakes)</strong>
+              আপুনি সৰ্বাধিক
+              <strong>৫টা ভুল (5 mistakes)</strong>
               কৰিব পাৰে।
             </p>
           </div>
 
           <div class="adaptive-info">
-            <strong>সাজু নেকি? (Are you ready?)</strong>
+            <strong> সাজু নেকি? (Are you ready?) </strong>
 
             <br />
 
@@ -678,9 +725,10 @@
             স্বয়ংক্ৰিয়ভাৱে নিৰ্ধাৰণ কৰা হ'ব। (Your previous game performance
             will determine the level of your next game.)
 
-            <br /><br />
+            <br />
+            <br />
 
-            <strong>দিনটোত মাত্ৰ এটা খেল। (Only one game per day.)</strong>
+            <strong> দিনটোত মাত্ৰ এটা খেল। (Only one game per day.) </strong>
           </div>
 
           <button id="startButton" class="primary-btn" onclick="startGame()">
@@ -689,7 +737,7 @@
         </div>
       </section>
 
-      <!-- GAME SCREEN -->
+      <!-- ================= GAME SCREEN ================= -->
 
       <section id="gameScreen" class="screen">
         <div class="game-header">
@@ -701,19 +749,19 @@
 
           <div class="stats">
             <div class="stat">
-              <span>সময় (Time)</span>
+              <span> সময় (Time) </span>
 
               <strong id="timer"> 00:00 </strong>
             </div>
 
             <div class="stat mistake-stat">
-              <span>ভুল (Mistakes)</span>
+              <span> ভুল (Mistakes) </span>
 
               <strong id="mistakes"> 0 / 5 </strong>
             </div>
 
             <div class="stat">
-              <span>পৰৱৰ্তী সংখ্যা (Next number)</span>
+              <span> পৰৱৰ্তী সংখ্যা (Next number) </span>
 
               <strong id="nextNumber"> 1 </strong>
             </div>
@@ -729,7 +777,7 @@
         </div>
       </section>
 
-      <!-- RESULT SCREEN -->
+      <!-- ================= RESULT SCREEN ================= -->
 
       <section id="resultScreen" class="screen">
         <div class="result-card">
@@ -739,61 +787,89 @@
 
           <p id="resultMessage"></p>
 
-          <button class="primary-btn" onclick="showInstructions()">Play</button>
+          <div class="result-buttons">
+            <!-- PLAY AGAIN / INSTRUCTIONS -->
+
+            <button class="primary-btn" onclick="showInstructions()">
+              Play
+            </button>
+
+            <!-- EXIT TO DASHBOARD -->
+
+            <button class="exit-btn" onclick="exitToDashboard()">
+              Exit to Dashboard
+            </button>
+          </div>
         </div>
       </section>
     </main>
+
+    <!-- ================= FOOTER ================= -->
 
     <footer>
       Count Next • স্মৃতি সহায়ক কাৰ্যকলাপ (Memory support activity)
     </footer>
 
-    <!-- SQLITE HELPER -->
+    <!-- ================= SQLITE HELPER ================= -->
 
     <script type="module" src="../../sqlite/offline-db.js"></script>
 
     <script>
       /* =====================================================
-       GAME VARIABLES
-    ===================================================== */
+         GAME VARIABLES
+      ===================================================== */
 
       let nextNumber = 1;
-
       let mistakes = 0;
-
       let timeTaken = 0;
-
       let timerInterval = null;
-
       let gameRunning = false;
 
       /* =====================================================
-       CURRENT LEVEL
-    ===================================================== */
+         CURRENT LEVEL
+      ===================================================== */
 
       let currentLevel = 1;
-
       let difficulty = "easy";
-
       let totalNumbers = 9;
 
       /* =====================================================
-       ADAPTIVE STEPS
+         DASHBOARD PATH
+         
+         If your Count Next file is inside:
+         
+         sih/
+           dashboard/
+             index.html
+           games/
+             count-next/
+               index.html
 
-       IMPORTANT ORDER:
+         then:
 
-       9
-       12
-       15
-       20
-       24
-       28
-       30
-       36
-       42
+         ../../dashboard/index.html
 
-       One step = one game difficulty.
-       ===================================================== */
+         is correct.
+
+         ===================================================== */
+
+      const DASHBOARD_PATH = "../../dashboard/index.html";
+
+      /* =====================================================
+         EXIT TO DASHBOARD
+      ===================================================== */
+
+      function exitToDashboard() {
+        clearInterval(timerInterval);
+
+        gameRunning = false;
+
+        window.location.href = DASHBOARD_PATH;
+      }
+
+      /* =====================================================
+         ADAPTIVE STEPS
+      ===================================================== */
 
       const adaptiveSteps = [
         {
@@ -852,8 +928,8 @@
       ];
 
       /* =====================================================
-       GRID CONFIGURATION
-    ===================================================== */
+         GRID CONFIGURATION
+      ===================================================== */
 
       const gridConfiguration = {
         9: {
@@ -903,16 +979,16 @@
       };
 
       /* =====================================================
-       PATIENT ID
-    ===================================================== */
+         PATIENT ID
+      ===================================================== */
 
       function getCurrentPatientId() {
         return "prototype-user-001";
       }
 
       /* =====================================================
-       DIFFICULTY NAME
-    ===================================================== */
+         DIFFICULTY NAME
+      ===================================================== */
 
       function getDifficultyName() {
         if (difficulty === "easy") {
@@ -927,17 +1003,8 @@
       }
 
       /* =====================================================
-       PERFORMANCE RULE
-
-       0–1 mistakes
-       → NEXT STEP
-
-       2–3 mistakes
-       → SAME STEP
-
-       4–5 mistakes
-       → PREVIOUS STEP
-    ===================================================== */
+         PERFORMANCE RULE
+      ===================================================== */
 
       function getNextAdaptiveStep(previousStep, previousMistakes) {
         if (previousMistakes <= 1) {
@@ -952,13 +1019,8 @@
       }
 
       /* =====================================================
-       GET TODAY DATE
-
-       Uses local browser date.
-
-       Example:
-       2026-09-05
-    ===================================================== */
+         GET TODAY DATE
+      ===================================================== */
 
       function getTodayDate() {
         const now = new Date();
@@ -973,45 +1035,18 @@
       }
 
       /* =====================================================
-       CHECK WHETHER USER ALREADY PLAYED TODAY
-    ===================================================== */
+         CHECK WHETHER USER ALREADY PLAYED TODAY
+      ===================================================== */
 
       function hasPlayedToday(history) {
         const today = getTodayDate();
 
         return history.some((session) => {
-          /*
-          SQLite result indexes:
-
-          0  id
-          1  sync_id
-          2  user_id
-          3  game_name
-          4  level
-          5  difficulty
-          6  total_numbers
-          7  score
-          8  mistakes
-          9  time_taken
-          10 reaction_times
-          11 reaction_time_std_dev
-          12 error_log
-          13 hesitation_events
-          14 completed
-          15 completed_at
-          16 synced
-        */
-
           const completedAt = session[15];
 
           if (!completedAt) {
             return false;
           }
-
-          /*
-          Convert stored ISO date to
-          local browser date.
-        */
 
           const sessionDate = new Date(completedAt);
 
@@ -1032,15 +1067,8 @@
       }
 
       /* =====================================================
-       RESOLVE TODAY'S GAME
-
-       IMPORTANT:
-
-       We DO NOT move immediately after finishing.
-
-       The previous result is used only when
-       the user returns on a later day.
-    ===================================================== */
+         RESOLVE TODAY'S GAME
+      ===================================================== */
 
       async function resolveAdaptiveLevel(patientId) {
         try {
@@ -1050,9 +1078,7 @@
             20,
           );
 
-          /* -----------------------------------------------
-           IF USER ALREADY PLAYED TODAY
-        ------------------------------------------------ */
+          /* ALREADY PLAYED TODAY */
 
           if (hasPlayedToday(history)) {
             return {
@@ -1060,14 +1086,7 @@
             };
           }
 
-          /* -----------------------------------------------
-           FIRST EVER GAME
-
-           ALWAYS:
-
-           Level 1 Easy
-           9 numbers
-        ------------------------------------------------ */
+          /* FIRST EVER GAME */
 
           if (!history || history.length === 0) {
             return {
@@ -1081,9 +1100,7 @@
             };
           }
 
-          /* -----------------------------------------------
-           MOST RECENT PREVIOUS GAME
-        ------------------------------------------------ */
+          /* MOST RECENT GAME */
 
           const last = history[0];
 
@@ -1093,9 +1110,7 @@
 
           const previousMistakes = Number(last[8]) || 0;
 
-          /* -----------------------------------------------
-           FIND PREVIOUS STEP
-        ------------------------------------------------ */
+          /* FIND PREVIOUS STEP */
 
           let previousStep = adaptiveSteps.findIndex(
             (step) =>
@@ -1107,13 +1122,7 @@
             previousStep = 0;
           }
 
-          /* -----------------------------------------------
-           CALCULATE NEXT STEP
-
-           0–1 → next
-           2–3 → same
-           4–5 → previous
-        ------------------------------------------------ */
+          /* CALCULATE NEXT STEP */
 
           const nextStep = getNextAdaptiveStep(previousStep, previousMistakes);
 
@@ -1135,12 +1144,7 @@
         } catch (error) {
           console.error("❌ Adaptive analysis failed:", error);
 
-          /*
-          Safe fallback.
-
-          A fresh/failed resolution MUST
-          NEVER start at a high level.
-        */
+          /* SAFE FALLBACK */
 
           return {
             alreadyPlayedToday: false,
@@ -1155,8 +1159,8 @@
       }
 
       /* =====================================================
-       UPDATE GRID COLUMNS
-    ===================================================== */
+         UPDATE GRID COLUMNS
+      ===================================================== */
 
       function updateGridColumns() {
         const grid = document.getElementById("numberGrid");
@@ -1173,8 +1177,8 @@
       }
 
       /* =====================================================
-       SHOW SCREEN
-    ===================================================== */
+         SHOW SCREEN
+      ===================================================== */
 
       function showScreen(screenId) {
         document.querySelectorAll(".screen").forEach((screen) => {
@@ -1185,8 +1189,8 @@
       }
 
       /* =====================================================
-       SHOW INSTRUCTIONS
-    ===================================================== */
+         SHOW INSTRUCTIONS
+      ===================================================== */
 
       function showInstructions() {
         clearInterval(timerInterval);
@@ -1199,8 +1203,8 @@
       }
 
       /* =====================================================
-       START GAME
-    ===================================================== */
+         START GAME
+      ===================================================== */
 
       async function startGame() {
         const startButton = document.getElementById("startButton");
@@ -1214,20 +1218,9 @@
         try {
           const patientId = getCurrentPatientId();
 
-          /*
-          Resolve today's game.
-
-          This checks:
-          1. Already played today?
-          2. First ever game?
-          3. Previous performance?
-        */
-
           const resolved = await resolveAdaptiveLevel(patientId);
 
-          /* -----------------------------------------------
-           ALREADY PLAYED TODAY
-        ------------------------------------------------ */
+          /* ALREADY PLAYED TODAY */
 
           if (resolved.alreadyPlayedToday) {
             showScreen("resultScreen");
@@ -1243,9 +1236,7 @@
             return;
           }
 
-          /* -----------------------------------------------
-           SET TODAY'S LEVEL
-        ------------------------------------------------ */
+          /* SET TODAY'S LEVEL */
 
           currentLevel = resolved.level;
 
@@ -1255,13 +1246,13 @@
 
           console.log("🎮 Starting Count Next:", {
             level: currentLevel,
+
             difficulty: difficulty,
+
             numbers: totalNumbers,
           });
 
-          /* -----------------------------------------------
-           RESET GAME
-        ------------------------------------------------ */
+          /* RESET GAME */
 
           nextNumber = 1;
 
@@ -1271,9 +1262,7 @@
 
           gameRunning = true;
 
-          /* -----------------------------------------------
-           UPDATE UI
-        ------------------------------------------------ */
+          /* UPDATE UI */
 
           updateStats();
 
@@ -1301,8 +1290,8 @@
       }
 
       /* =====================================================
-       UPDATE DIFFICULTY TEXT
-    ===================================================== */
+         UPDATE DIFFICULTY TEXT
+      ===================================================== */
 
       function updateDifficultyText() {
         document.getElementById("difficultyText").textContent =
@@ -1310,8 +1299,8 @@
       }
 
       /* =====================================================
-       CREATE RANDOM GRID
-    ===================================================== */
+         CREATE RANDOM GRID
+      ===================================================== */
 
       function createGrid() {
         const grid = document.getElementById("numberGrid");
@@ -1326,7 +1315,7 @@
           numbers.push(i);
         }
 
-        /* Fisher-Yates shuffle */
+        /* FISHER-YATES SHUFFLE */
 
         for (let i = numbers.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -1334,7 +1323,7 @@
           [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
         }
 
-        /* Create buttons */
+        /* CREATE BUTTONS */
 
         numbers.forEach((number) => {
           const button = document.createElement("button");
@@ -1354,17 +1343,15 @@
       }
 
       /* =====================================================
-       CHECK NUMBER
-    ===================================================== */
+         CHECK NUMBER
+      ===================================================== */
 
       function checkNumber(button, number) {
         if (!gameRunning) {
           return;
         }
 
-        /* -----------------------------------------------
-         CORRECT
-      ------------------------------------------------ */
+        /* CORRECT */
 
         if (number === nextNumber) {
           button.classList.add("correct");
@@ -1386,9 +1373,8 @@
           document.getElementById("gameMessage").textContent =
             `ভাল! এতিয়া ${nextNumber} নম্বৰটো বিচাৰক (Good! Now find number ${nextNumber})`;
         } else {
-          /* -----------------------------------------------
-         WRONG
-      ------------------------------------------------ */
+
+        /* WRONG */
           mistakes++;
 
           button.classList.add("wrong");
@@ -1399,9 +1385,7 @@
             button.classList.remove("wrong");
           }, 350);
 
-          /*
-          5 mistakes = game ends.
-        */
+          /* FIVE MISTAKES */
 
           if (mistakes >= 5) {
             finishGame(false, "mistakes");
@@ -1415,8 +1399,8 @@
       }
 
       /* =====================================================
-       TIMER
-    ===================================================== */
+         TIMER
+      ===================================================== */
 
       function startTimer() {
         clearInterval(timerInterval);
@@ -1433,8 +1417,8 @@
       }
 
       /* =====================================================
-       UPDATE TIMER
-    ===================================================== */
+         UPDATE TIMER
+      ===================================================== */
 
       function updateTimer() {
         const minutes = Math.floor(timeTaken / 60);
@@ -1450,8 +1434,8 @@
       }
 
       /* =====================================================
-       UPDATE STATS
-    ===================================================== */
+         UPDATE STATS
+      ===================================================== */
 
       function updateStats() {
         document.getElementById("mistakes").textContent = `${mistakes} / 5`;
@@ -1462,37 +1446,19 @@
       }
 
       /* =====================================================
-       FINISH GAME
-    ===================================================== */
+         FINISH GAME
+      ===================================================== */
 
       async function finishGame(success, reason = "") {
         clearInterval(timerInterval);
 
         gameRunning = false;
 
-        /*
-        Score is calculated and stored.
-
-        Score is NOT displayed.
-
-        For example:
-
-        0 mistakes = 100
-        1 mistake  = 80
-        2 mistakes = 60
-        3 mistakes = 40
-        4 mistakes = 20
-        5 mistakes = 0
-
-        The adaptive decision itself uses
-        the mistake categories.
-      */
+        /* SCORE */
 
         const score = Math.max(0, 100 - mistakes * 20);
 
-        /* -----------------------------------------------
-         SAVE TO SQLITE
-      ------------------------------------------------ */
+        /* SAVE TO SQLITE */
 
         try {
           if (typeof window.saveGameResult === "function") {
@@ -1522,9 +1488,7 @@
           console.error("❌ Could not save game result:", error);
         }
 
-        /* -----------------------------------------------
-         SHOW RESULT
-      ------------------------------------------------ */
+        /* SHOW RESULT */
 
         showScreen("resultScreen");
 
@@ -1543,25 +1507,20 @@
 
           message.textContent = `আপুনি সফলতাৰে ${totalNumbers}টা সংখ্যা বিচাৰি উলিয়ালে। (You successfully found all ${totalNumbers} numbers.) কাইলৈ আপোনাৰ আজিৰ ফলাফলৰ ওপৰত ভিত্তি কৰি পৰৱৰ্তী স্তৰ নিৰ্ধাৰণ কৰা হ'ব। (Your next level will be decided tomorrow based on today's performance.)`;
         } else if (reason === "mistakes") {
-          /* FIVE MISTAKES */
+
+        /* FIVE MISTAKES */
           icon.textContent = "•";
 
           title.textContent = "ভাল চেষ্টা! (Good effort!)";
 
-          message.textContent = `৫টা ভুল হোৱাৰ পিছত খেলখন শেষ হৈছে। (The game ended after 5 mistakes.) কাইলৈ আপোনাৰ ফলাফল অনুসৰি স্তৰ নিৰ্ধাৰণ কৰা হ'ব। (Your level tomorrow will be decided based on your performance today.)`;
+          message.textContent =
+            "৫টা ভুল হোৱাৰ পিছত খেলখন শেষ হৈছে। (The game ended after 5 mistakes.) কাইলৈ আপোনাৰ ফলাফল অনুসৰি স্তৰ নিৰ্ধাৰণ কৰা হ'ব। (Your level tomorrow will be decided based on your performance today.)";
         }
       }
 
       /* =====================================================
-       INITIAL DEFAULT
-
-       IMPORTANT:
-
-       Fresh user ALWAYS starts:
-
-       Level 1 Easy
-       9 numbers
-    ===================================================== */
+         INITIAL DEFAULT
+      ===================================================== */
 
       currentLevel = 1;
 
@@ -1570,8 +1529,8 @@
       totalNumbers = 9;
 
       /* =====================================================
-       INITIALIZE SQLITE
-    ===================================================== */
+         INITIALIZE SQLITE
+      ===================================================== */
 
       window.addEventListener("load", async () => {
         if (typeof window.initSQLite === "function") {
